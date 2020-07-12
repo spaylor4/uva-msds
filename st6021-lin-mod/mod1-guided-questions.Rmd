@@ -9,39 +9,63 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Question Set Overview
 
-The data for this question is saved as “bp.txt”. The data set contains information on theweight (in pounds) and systolic blood pressure (in millimeters of mercury, mmHg) of 26randomly selected males in the age group 25-30.
+The data for this question is saved as “bp.txt”. The data set contains information on the weight (in pounds) and systolic blood pressure (in millimeters of mercury, mmHg) of 26 randomly selected males in the age group 25-30.
 
 ```{r data}
-summary(cars)
+bp <- read.table("bp.txt", header = TRUE)
 ```
 
 ## Question 1
 
-Create a scatterplot for this data set. Be sure to label the axes and give an appropriatetitle.  Based on the appearance of the plot, does a simple linear regression appearreasonable for the data?
+Create a scatterplot for this data set. Be sure to label the axes and give an appropriate title.  Based on the appearance of the plot, does a simple linear regression appear reasonable for the data?
 
 ```{r q1, echo=FALSE}
-
+plot(bp$weight, bp$BP, xlab = "Weight", ylab = "Systolic Blood Pressure", main = "Weight and Blood Pressure,  Males Age 25-30")
 ```
+
+A linear regression appears reasonable for this data, as the points generally seem to follow a positive linear relationship.
 
 ## Question 2
 
-Perform a simple linear regression for systolic blood pressure against weight. Recordthe estimated equation for the linear regression, and state the estimated values ofthe slope and intercept. Interpret the values of the estimated slope and intercept, incontext.
+Perform a simple linear regression for systolic blood pressure against weight. Record the estimated equation for the linear regression, and state the estimated values of the slope and intercept. Interpret the values of the estimated slope and intercept, in context.
+
+```{r regression}
+lm_bp <- lm(BP~weight, data = bp)
+summary(lm_bp)
+```
+
+The estimated regression equation is BP = 69.104 + 0.419*weight, with 69.104 being the estimate for the intercept and 0.419 being the estimate for the coefficient. This means that someone weighting 0 pounds would have an estimate blood pressure of 69mmHg (although this is clearly not realistic). More usefully, this means that for every additional pound in weight, blood pressure for men in this age group is expected to increase by 0.419mmHg.
 
 ## Question 3
 
-For a 30-year-old male whose weight is 200, what is his predicted systolic blood pres-sure? What is his residual?
+For a 30-year-old male whose weight is 200, what is his predicted systolic blood pressure? What is his residual?
+
+```{r estimate}
+weight_est <- lm_bp$coefficients['(Intercept)'] + lm_bp$coefficients['weight'] * 200
+print(weight_est)
+print(148 - weight_est)
+```
+
+Estimated systolic blood pressure for a 30-year-old male weighing 200 pounds is 152.99mmHg. His residual is -4.99, since the one person in the sample data weighing 200 pounds has blood pressure of 148mmHg.
 
 ## Question 4
 
 Produce the ANOVA table for this linear regression.
 
+```{r anova}
+anova(lm_bp)
+```
+
+
 ## Question 5
 
-What is the value ofR2? Explain how this value is found. What does this value meanin this context?
+What is the value of $R^2$? Explain how this value is found. What does this value mean in this context?
+
+The $R^2$ value is 0.5983, as shown in the summary output of the linear regression model. This can also be found from the ANOVA table by calculating the regression sum of squares divided by total sum of squares (regression + residual). In this context, this means that roughly 60% of the variance in blood pressure among males age 25-30 can be explained by weight.
 
 ## Question 6
 
-What is the estimated value for the standard deviation of the error terms for thisregression model, ˆσ?
+What is the estimated value for the standard deviation of the error terms for this regression model, ˆσ?
 
 ## Question 7
 
@@ -53,6 +77,6 @@ Explain how the F statistic of 35.744 is found.
 
 ## Question 9
 
-Write an appropriate conclusion for the ANOVA F test for this simple linear regressionmodel.
+Write an appropriate conclusion for the ANOVA F test for this simple linear regression model.
 
 
