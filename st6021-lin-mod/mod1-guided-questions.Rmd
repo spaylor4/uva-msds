@@ -41,7 +41,7 @@ The estimated regression equation is BP = 69.104 + 0.419*weight, with 69.104 bei
 For a 30-year-old male whose weight is 200, what is his predicted systolic blood pressure? What is his residual?
 
 ```{r estimate}
-weight_est <- lm_bp$coefficients['(Intercept)'] + lm_bp$coefficients['weight'] * 200
+weight_est <- lm_bp$coefficients[['(Intercept)']] + lm_bp$coefficients[['weight']] * 200
 print(weight_est)
 print(148 - weight_est)
 ```
