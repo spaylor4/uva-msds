@@ -65,18 +65,27 @@ The $R^2$ value is 0.5983, as shown in the summary output of the linear regressi
 
 ## Question 6
 
-What is the estimated value for the standard deviation of the error terms for this regression model, ˆσ?
+What is the estimated value for the standard deviation of the error terms for this regression model, $\hat{\sigma}$?
+
+$\hat{\sigma}^2 = \frac{SS_{RES}}{n - 2} = \frac{1808.6}{26 - 2} = 75.358$
+
+Therefore, $\hat{\sigma} = 8.68$.
+
 
 ## Question 7
 
 What are the null and alternative hypotheses for the ANOVA F test?
 
+The null hypothesis for the ANOVA F test is that the regression coefficient is equal to 0, and the alternative hypothesis is that the regression coefficient for weight is not equal to 0.
+
 ## Question 8
 
 Explain how the F statistic of 35.744 is found.
+
+The F statistic is the regression mean square divided by the residual mean square. This can be confirmed for this example by calculating the F statistics from those values in the ANOVA table.
 
 ## Question 9
 
 Write an appropriate conclusion for the ANOVA F test for this simple linear regression model.
 
-
+Based on the ANOVA F test for this model, we can reject the null hypothesis and conclude that the relationship between weight and blood pressure is statistically significant. This is because the ANOVA table Pr(>F) is less than 0.001, meaning that the relationship is statistically significant at a value of $\alpha=0.001$.
