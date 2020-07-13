@@ -25,5 +25,11 @@ word_lens = [(word, len(word)) for word in words]
 
 print(word_lens)
 
+#print out word-size tuples in order by length sorted from shortest to longest
+word_lens.sort(key = lambda x: x[1])
+print(word_lens)
+
+#print out only unique words
+print(list(set(word_lens)))
 
 
