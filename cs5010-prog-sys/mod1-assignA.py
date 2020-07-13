@@ -21,7 +21,8 @@ def getUserInfo():
     return user_dict
 
 
-
+users_dict = dict()
 for i in range(4):
-    print(i)
+    new_user = getUserInfo()
+    users_dict.update(new_user)
 
