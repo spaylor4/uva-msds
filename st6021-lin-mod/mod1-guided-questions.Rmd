@@ -23,7 +23,7 @@ Create a scatterplot for this data set. Be sure to label the axes and give an ap
 plot(bp$weight, bp$BP, xlab = "Weight", ylab = "Systolic Blood Pressure", main = "Weight and Blood Pressure,  Males Age 25-30")
 ```
 
-A linear regression appears reasonable for this data, as the points generally seem to follow a positive linear relationship.
+A linear regression appears reasonable for this data, as the points generally seem to follow a positive linear relationship. There is some ambiguity due to the limited number of data points, as it appears that the data could also follow a more curved pattern.
 
 ## Question 2
 
@@ -46,7 +46,7 @@ print(weight_est)
 print(148 - weight_est)
 ```
 
-Estimated systolic blood pressure for a 30-year-old male weighing 200 pounds is 152.99mmHg. His residual is -4.99, since the one person in the sample data weighing 200 pounds has blood pressure of 148mmHg.
+Estimated systolic blood pressure for a 30-year-old male weighing 200 pounds is 152.99mmHg. His residual (actual - predicted) is -4.99, since the one person in the sample data weighing 200 pounds has blood pressure of 148mmHg.
 
 ## Question 4
 
