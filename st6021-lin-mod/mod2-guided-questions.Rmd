@@ -21,31 +21,84 @@ bp <- read_tsv("bp.txt")
 
 Produce a plot of BP against weight.  Write the estimated linear regression equation.
 
+```{r plot}
+bp %>% ggplot(mapping = aes(x = weight, y = BP)) + geom_point() + xlab("Weight (lbs)") + ylab ("Systolic Blood Pressure (mmHg)") + labs(title = "Weight and Blood Pressure,  Males Age 25-30")
+```
+```{r regression}
+lm_bp <- lm(BP~weight, data = bp)
+summary(lm_bp)
+```
+
+The estimated linear regression equation is $\hat{y} = 69.104 + 0.419x$ where x is weight and $\hat{y}$ is estimated systolic blood pressure.
+
+
 ## Question 2
 
 Use the function `cor()` to obtain the correlation between systolic blood pressure and weight.  Interpret this value contextually.  How reliable is this interpretation?
+
+```{r correlation}
+cor(bp$weight, bp$BP)
+```
+
+The correlation of 0.77 indicates a pretty strong positive linear relationship between weight and blood pressure. Like with the $R^2$, the correlation can indicate a linear relationship even if a non-linear relationship is more appropriate.
 
 ## Question 3
 
 What is the change in the predicted systolic blood pressure when weight increases by one pound?  Also report the corresponding 95% confidence interval for the change in the predicted systolic blood pressure when weight increases by one pound.
 
+```{r slope_ci}
+confint(lm_bp, level = 0.95)
+```
+
+When weight increases by one pound, the predicted systolic blood pressure increases by 0.419mmHg. The 95% confidence interval for the change in predicted systolic blood pressure when weight increases by one pound is (0.2746, 0.5642) mmHg.
+
 ## Question 4
 
 Conduct a hypothesis test to determine whether or not there is a linear association between weight and systolic blood pressure.  State the hypotheses, p-value, and conclusion in context.
+
+The null hypothesis is $H_0: \beta_1 = 0$, and the alternative hypothesis is $H_1: \beta_1 \not= 0$. The t-statistic for the regression model is $t = \frac{0.41942}{0.07015} = 5.978902$, so the p-value is $2 * P(t_{n - 2} > |t|)$.
+
+```{r}
+2 * (1 - pt(5.978902, 24))
+```
+
+The p-value is $3.59 * 10^{-6}$, which is statistically significant even at a small alpha of 0.001. Therefore, we reject the null hypothesis and conclude that our data support the alternative hypothesis that there does exist a linear relationship between weight and systolic blood pressure.
 
 ## Question 5
 
 Are your results from parts 3 and 4 consistent?  Briefly explain.
 
+Yes. Because the 95% confidence interval for the weight coefficient $\beta_1$ does not include 0, we can conclude that it is unlikely that $\beta_1$ is equal to 0, which is what we concluded in part 4 using the p-value approach.
+
 ## Question 6
 
 Estimate  the  mean  systolic  blood  pressure  for  young  males  who  weigh  200  pounds. Also report the 95% confidence interval for the mean systolic blood pressure of young males who weigh 200 pounds.
+
+```{r mean_interval}
+predict.lm(lm_bp, data.frame("weight" = c(200)), level = 0.95, interval = "confidence")
+```
+
+The estimated mean systolic blood pressure for young males who weight 200 pounds is 152.99 mmHg, with a 95% confidence interval of 148.65 to 157.33 mmHg.
 
 ## Question 7
 
 Report the 95% prediction interval for the systolic blood pressure a young male who weighs 200 pounds.
 
+```{r obs_interval}
+predict.lm(lm_bp, data.frame("weight" = c(200)), level = 0.95, interval = "prediction")
+```
+
+The predicted systolic blood pressure for a young male who weighs 200 pounds is 152.99 mmHg (the same result found above in question 6), but the 95% confidence interval for this individual prediction is 134.55 to 171.42 mmHg.
+
 ## Question 8
 
 It has been suggested that if the predicted systolic blood pressure increases by more than  0.35  mmHg  when  weight  increases  by  one  pound,  there  is  an  increased  risk  of heart disease.  Is there significant evidence that males in the age group 25-30 are at an increased risk of heart disease?  Conduct an appropriate hypothesis test.  What is the null and alternative hypotheses, test statistic, and conclusion?
+
+In this case, our null hypothesis is $H_0: \beta_1 <= 0.35$ and the alternative is $H_1: \beta_1 > 0.35$. This makes the t-statistic $t_0 = \frac{0.41942 - 0.35}{0.07015} = 0.9895937$. Because this is a one-sided test, the p-value is now $P(t_{n-2} > t_0)$, calculated as follows:
+
+```{r}
+1 - pt(0.9895937, 24)
+```
+
+Because our p-value 0.166 is greater than 0.05, we fail to reject the null hypothesis and conclude that the data do not support the alternative hypothesis that systolic blood pressure increases by more than 0.35mmHg/lb. There is no evidence that males age 25-30 are at an elevated risk of heart disease based on our data.
 
