@@ -1,0 +1,51 @@
+---
+title: "Module 2 Guided Question Set"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+## Question Set Overview
+
+We will continue to use the dataset “bp.txt” that we saw in the last module.  The dataset contains information on the weight (in pounds) and systolic blood pressure (in millimeters mercury, mmHg) of 26 randomly selected males in the age group 25-30.
+
+```{r data, collapse=TRUE}
+bp <- read_tsv("bp.txt")
+```
+
+## Question 1
+
+Produce a plot of BP against weight.  Write the estimated linear regression equation.
+
+## Question 2
+
+Use the function `cor()` to obtain the correlation between systolic blood pressure and weight.  Interpret this value contextually.  How reliable is this interpretation?
+
+## Question 3
+
+What is the change in the predicted systolic blood pressure when weight increases by one pound?  Also report the corresponding 95% confidence interval for the change in the predicted systolic blood pressure when weight increases by one pound.
+
+## Question 4
+
+Conduct a hypothesis test to determine whether or not there is a linear association between weight and systolic blood pressure.  State the hypotheses, p-value, and conclusion in context.
+
+## Question 5
+
+Are your results from parts 3 and 4 consistent?  Briefly explain.
+
+## Question 6
+
+Estimate  the  mean  systolic  blood  pressure  for  young  males  who  weigh  200  pounds. Also report the 95% confidence interval for the mean systolic blood pressure of young males who weigh 200 pounds.
+
+## Question 7
+
+Report the 95% prediction interval for the systolic blood pressure a young male who weighs 200 pounds.
+
+## Question 8
+
+It has been suggested that if the predicted systolic blood pressure increases by more than  0.35  mmHg  when  weight  increases  by  one  pound,  there  is  an  increased  risk  of heart disease.  Is there significant evidence that males in the age group 25-30 are at an increased risk of heart disease?  Conduct an appropriate hypothesis test.  What is the null and alternative hypotheses, test statistic, and conclusion?
+
