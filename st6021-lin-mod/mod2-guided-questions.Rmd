@@ -40,7 +40,7 @@ Use the function `cor()` to obtain the correlation between systolic blood pressu
 cor(bp$weight, bp$BP)
 ```
 
-The correlation of 0.77 indicates a pretty strong positive linear relationship between weight and blood pressure. Like with the $R^2$, the correlation can indicate a linear relationship even if a non-linear relationship is more appropriate.
+The correlation of 0.77 indicates a pretty strong positive linear relationship between weight and blood pressure. Like with the $R^2$, the correlation can indicate a linear relationship even if a non-linear relationship is more appropriate. Correlation should only be used if you've plotted the data and it appears that a linear relationship is appropriate.
 
 ## Question 3
 
@@ -68,7 +68,7 @@ The p-value is $3.59 * 10^{-6}$, which is statistically significant even at a sm
 
 Are your results from parts 3 and 4 consistent?  Briefly explain.
 
-Yes. Because the 95% confidence interval for the weight coefficient $\beta_1$ does not include 0, we can conclude that it is unlikely that $\beta_1$ is equal to 0, which is what we concluded in part 4 using the p-value approach.
+Yes. Because the 95% confidence interval for the weight coefficient $\beta_1$ does not include 0, we can conclude that it is unlikely that $\beta_1$ is equal to 0, which is what we concluded in part 4 using the p-value approach. For a two-sided hypothesis test, the $1 - \alpha$ C.I. for the slope is always consistent with the result of the hypothesis test. For a one-sided test, this is not necessarily the case.
 
 ## Question 6
 
@@ -101,4 +101,6 @@ In this case, our null hypothesis is $H_0: \beta_1 <= 0.35$ and the alternative 
 ```
 
 Because our p-value 0.166 is greater than 0.05, we fail to reject the null hypothesis and conclude that the data do not support the alternative hypothesis that systolic blood pressure increases by more than 0.35mmHg/lb. There is no evidence that males age 25-30 are at an elevated risk of heart disease based on our data.
+
+Can write the null hypothesis as $H_0: \beta_1 <= 0.35$ or $H_0: \beta_1 = 0.35$. Suggested that we use = to avoid confusion between null and alternative, but either is fine. If we reject the null for =, we will also reject it for <=.
 
