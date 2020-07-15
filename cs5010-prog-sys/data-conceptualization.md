@@ -1,4 +1,4 @@
-## Module 1: Data Conceptualization and Intro to Python
+### Module 1: Data Conceptualization and Intro to Python
 
 #### What is Data?
 
@@ -15,7 +15,7 @@
 #### Intro to Python
 
 - Python is a high-level language
-- Python is dynamically typed, meaning that you don't have to specify variable data type upon creation.
+- Python is dynamically typed, meaning that you don't have to specify variable data type upon creation. It is also strongly typed, meaning that, for example, you can't add an integer and a string.
 - Python id(var) function returns the unique identifier of an object, which will remain constant throughout its lifetime. This can be thought of as the address of the object in memory.
 - Tuples have most of the same properties as lists, with the key difference that lists are mutable and tuples are immutable.
 - Python namespaces are basically variable scopes and contain variables and methods that are defined.
@@ -23,7 +23,7 @@
 - For loops create internal iterators. Can explicitly create an iterator using `iter(item)` where item is a sequence of data (e.g. list or dictionary). Can then proceed through the items in the iterator using `next(iterator)`.
 - As far as this course goes, the most important thing when it comes to coding style is consistency. Companies often have their own style guidelines ([PEP 8](https://www.python.org/dev/peps/pep-0008/) is common for Python).
 
-#### Intro to Python, Part 2
+### Module 2: Intro to Python, Part II
 
 - Positional arguments are passed to the function in order, e.g. `function(arg1, arg2)`. Keyword arguments, on the other hand, are passed to the function with specific names, e.g. `function(arg1 = val1, arg2 = val2)`. Python allows you to pass positional arguments and keyword arguments to the same function call, but positional arguments must come first.
 
@@ -52,6 +52,10 @@
 
 - Fields are attributes of a class, whereas methods are behaviors of a class.
 
+- Why do we use classes? Encapsulation and abstraction make code more efficient, readable, reproducible, and easier to debug.
+
+- Classes are like blueprints, and instances of the class are like buildings.
+
 - Classes' to string method `__str__` defines how objects of that class will be converted to a string. Like the `__init__` method, the to string method is recognized by the compiler. When running `print(classInstance)`, the to string method is implicitly called.
 
 - Derived classes inherit from and extend base classes. This is sometimes called an "is a" relationship, since the derived class object is a base class object (but not vice versa).
@@ -66,3 +70,27 @@
     ```
 
   - Instances of the derived class will have all the attributes and methods available to instances of the base class.
+
+### Module 3: Intro to Python, Part III
+
+- All class fields and methods are public by default in Python. Conventionally, protected fields and methods (accessible only from within the class and its subclasses) are designated by single underscore prefix. Private fields and methods (not able to access from outside the class) are designated by a prefix of two underscores.
+
+  - Protected fields/methods are accessible outside the class but shouldn't be. Private fields/methods cannot be accessed outside the class and will throw an error.
+
+- Every class instance has a built-in attribute `__class__` which is the object's class.
+
+- Python class attributes are public and can be accessed and updated using the dot operator. `instance.attribute` returns the attribute value for that particular instance, and `instance.attribute = new_val` sets the attribute to a new value for that instance.
+
+- Objects have a destructor method `object.__del__(self)` that is called when the instance is about to be destroyed.
+
+- When default values are passes to a function definition, they are created at the time the def statement is executed (when the function is created), not each time the function is called. When mutable objects (lists, dictionaries, etc.) are supplied as default arguments and then mutated, the mutated object will be passed in future function calls. To avoid issues arising from this, you must be sure a new object is created each time the function is called, like so:
+
+  ```python
+  def my_function(element, aList = None):
+    if aList is None:
+      aList = []
+      #do somethine with aList
+      #return something
+  ```
+
+  Using `def my_function(element, aList = [])` should not be used, as aList may no longer be equal to an empty list every time the function is called.
