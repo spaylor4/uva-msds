@@ -94,3 +94,30 @@
   ```
 
   Using `def my_function(element, aList = [])` should not be used, as aList may no longer be equal to an empty list every time the function is called.
+
+- Base class methods can be overwritten by derived class methods with the same name. Because of something called runtime polymorphism, the compiler will first look for a called method in the derived class, run it if it is found, and look for that method in the base class only if it is not found in the derived class. This is useful when you want the derived class to exhibit the same functionality as the base but with more specific functionality.
+
+- Compilation (syntax) errors are caught upon compilation of the program and are often typographical errors, like mispelling a function or missing a parenthesis. Runtime errors, on the other hand, occur after compilation and during running of the program, such as divide by zero or file not found errors.
+
+  - When Python encounters runtime errors, it raises an Exception, an object containing a description of the error and the traceback.
+
+- If you are aware of what exceptions might be thrown by your code, you can handle them with try-except statements.
+
+  ```python
+  try:
+    #some code
+  except:
+    #code to run when try code raises an exception
+  except FileNotFoundError as err:
+    #can optionally specify multiple except statements for different types of exceptions
+    #do something with err, like print or log
+    raise #optional
+  else:
+    #runs if try block succeeds
+  finally: #optional
+    #code to run always after try/except statements regardless of whether exceptions were raised
+  ```
+
+  Python has an exception [hierarchy](https://docs.python.org/3/library/exceptions.html#exception-hierarchy), so if you want one except statement for a subclass exception and another except statement for its parent class exception, you must put the subclass except statement first.
+
+- Further [reading](https://jakevdp.github.io/PythonDataScienceHandbook/01.06-errors-and-debugging.html) on jupyter notebook error handling and debugging.
