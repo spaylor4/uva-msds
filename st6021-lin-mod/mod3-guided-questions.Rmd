@@ -41,30 +41,62 @@ plot(lm_defects$fitted.values, lm_defects$residuals, main="Plot of Residuals aga
 abline(h=0,col="red")
 ```
 
-This plot of residuals vs. fitted values follows a clear curved shape, providing evidence of a non-linear relationship between our regressor and predictor and violating the assumption of a linear relationship necessary for simple linear regression.
+This plot of residuals vs. fitted values follows a clear curved shape, providing evidence of a non-linear relationship between our regressor and predictor and violating the assumption of error terms having mean 0 for each subregion of the regressor variable.
 
 ## Question 3
 
 Based on your answers to parts 1 and 2, do we need to transform at least one of the variables?
 
-Yes.
+Yes, the plots in parts 1 and 2 show evidence of non-linearity, so we need to transform at least one of the variables to have a linear relationship.
 
 ## Question 4
 
 One of your classmates says that since she is not sure if the variance is constant, she should use the Box-Cox method to see if the response variable should be transformed first.  Do you agree with her idea?  Briefly explain.
 
+I agree. Because we have relatively few data points, it's hard to assess from the scatterplots whether the variance is constant or not, so it's probably a good idea to look at a Box-Cox plot to see if the response variable should be transformed first.
+
 ## Question 5
 
 Regardless of your answer to part 4, use R to produce a plot of the profile log-likelihoods for the parameter, λ, of the Box-Cox power transformation.  What transformation, if any, would you apply to the response variable?  Briefly explain.
+
+```{r box_cox_plot}
+library(MASS)
+boxcox(lm_defects)
+```
+
+Because the confidence interval for $\lambda$ does not include 1, we should use a transformation in this case. Because the optimal value of $\lambda$ is close to 0, I would choose the transformation $ln(y)$ because log transformations are more easily interpreted than other transformations.
 
 ## Question 6
 
 Apply the transformation you specified in part 5.  Then fit another simple linear regression model and produce the residual plot to assess if the assumptions are met.
 
+```{r transform}
+defects$defects_log <- log(defects$defects)
+lm_defects_transf <- lm(defects_log ~ weeks, data = defects)
+
+plot(lm_defects_transf$fitted.values, lm_defects_transf$residuals, main="Plot of Residuals against Fitted Values with Transformed Response Variable")
+abline(h=0,col="red")
+```
+
+Compared to the original residual plot the transformed model's residual plot is much better and meets the assumption of mean 0 that was not satisfied initially.
+
 ## Question 7
 
 Create an ACF plot of the residuals.  Comment if assumptions are not met for simple linear regression.
 
+```{r acf_plot}
+acf(lm_defects_transf$residuals, main="ACF of Residuals")
+```
+
+This plots meets the assumptions for simple linear regression, as no non-zero lags have significant auto-correlation. There is no evidence that the errors are correlated (which would violate the assumption of independence).
+
 ## Question 8
 
 Create a QQ plot of the residuals.  Comment if assumptions are not met for simple linear regression.
+
+```{r qq_plot}
+qqnorm(lm_defects_transf$residuals)
+qqline(lm_defects_transf$residuals, col="red")
+```
+
+There is some evidence that the errors are non-normal in the corners of the qqplot, but given that only two points deviates far from the expected line and that linear models are robust to non-normality of error terms, I don't think it's enough evidence to abandon the simple linear regression model.
