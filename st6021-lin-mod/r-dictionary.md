@@ -19,3 +19,16 @@ Keeping track of R functions and use cases covered in this course.
 
 - `confint(lin_mod, level = conf_level)` returns confidence intervals for all regression coefficients for a linear model at a given confidence level (equal to $1 - \alpha$).
 - `predict.lm(lin_mod, newdata, level = conf_level, interval = "confidence")` gives a prediction interval for the mean response at predictor variable values passed in newdata (a data frame). Similarly, `predict.lm(lin_mod, newdata, level = conf_level, interval = "prediction")` gives a prediction interval for a single new response for predictor variable values passed in newdata.
+
+#### Module 3: Model Diagnostics & Remedial Measures in SLR
+
+- `acf(lin_mod, main = "ACF of Residuals")` creates an ACF plot for a linear model to test independence of error terms. The horizontal blue dotted lines indicate the significance level, so if any non-zero lags exceed those lines, there is evidence of correlation among error terms.
+
+- To create a normal probability plot for a linear model, use these two lines:
+
+  ```R
+  qqnorm(lin_mod$residuals) #points
+  qqline(lin_mod$residuals, col="red") #line
+  ```
+
+  The points come from the residuals, while the line represents the expected values under normality. If the points closely follow the line, the assumption of normality of error terms is met.
