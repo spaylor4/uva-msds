@@ -24,17 +24,25 @@ def binarySearch(item_list,target):
     while search_max > search_min:
         mid = getMid(search_min, search_max)
         if target == item_list[mid]:
-            print("true")
-            # return True #if target equals mid element, we can stop searching
+            return True #if target equals mid element, we can stop searching
         elif target < item_list[mid]:
             search_max = mid - 1 #search bottom half in next iteration
         else:
             search_min = mid + 1 #search top half in next iteration
-    
-    return False #will only get here if while loop never returns True    
+            
+    #loop will terminate when search_min = search_max
+    #need to check once more at that index
+    mid = getMid(search_min, search_max)
+    if target == item_list[mid]:
+        return True
+    else:
+        return False  
 
 
+#
 item_list = [1, 2, 4, 6, 7, 9]
 
 binarySearch(item_list, 6)
-target = 6
+
+binarySearch(item_list, 3)
+
