@@ -11,9 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Module 4 Guided Question Set
 
-For  this  question,  we  will  use  the  data  set  “nfl.txt”,  which  contains  data  on  NFL  teamperformance from the 1976 season.  The variables are:
+For  this  question,  we  will  use  the  data  set  “nfl.txt”,  which  contains  data  on  NFL  team performance from the 1976 season.  The variables are:
 
-* y:  Games won (14-game season
+* y:  Games won (14-game season)
 
 * x1:  Rushing yards (season)
 
@@ -39,38 +39,111 @@ Instead of creating separate scatterplots for each pair of variables, you can cr
 
 Create a scatterplot matrix and find the correlation between all pairs of variables for this data set.  Answer the following questions based on the output:
 
-(a) Which  predictors  appear  to  be  linearly  related  to  the  number  of  wins?   Which predictors do not appear to have a linear relationhsip with the number of wins?
+(a) Which  predictors  appear  to  be  linearly  related  to  the  number  of  wins?   Which predictors do not appear to have a linear relationship with the number of wins?
 
 (b) Do you notice if any of the predictors are highly correlated with one another?  If so, which ones?
 
-(c) What predictors would you first consider to use in a multiplie linear regression? Briefly explain your choices.
+(c) What predictors would you first consider to use in a multiple linear regression? Briefly explain your choices.
+
+```{r scatter}
+nfl <- read_table2("nfl.txt")
+pairs(nfl, lower.panel = NULL)
+```
+
+(a) x1, x2, x4, x5, x7, and x8 appear to have a relatively linear relationship with number of wins (with x1 and x8 have the most clearly defined linear pattern). x3, x6, and x9 do not appear to have a linear relationship with number of wins.
+
+(b) x1 and x7 appear to be highly correlated. This makes sense because those variables are defined as the team's rushing yards and the percent of rushing plays out of total plays. x1 and x5, x5 and x7, and x7 and x8 also appear to be correlated, with x7 and x8 having a negative correlation.
+
+(c) I would first consider x1 and x2 (season passing and rushing yards), followed by x8 (opponent rushing yards), and x5 (turnover differential).
 
 ### Question 2
 
-Regardless of your answer to the previous question, fit a multiple regression model forthe number of games won against the following three predictors:  the team’s passingyardage, the percentage of rushing plays, and the opponents’ yards rushing.  Write theestimated regression equation.
+Regardless of your answer to the previous question, fit a multiple regression model for the number of games won against the following three predictors:  the team’s passing yardage, the percentage of rushing plays, and the opponents’ yards rushing.  Write the estimated regression equation.
+
+```{r regression}
+lm_nfl <- lm(y ~ x2 + x7 + x8, data = nfl)
+summary(lm_nfl)
+```
+
+The estimated regression equation is $\hat{y} = -1.808 + 0.004x_2 + 0.194x_7 - 0.005x_8$
 
 ### Question 3
 
 Interpret the estimated coefficient for the predictor $x_7$ in context.
 
+The estimated coefficient for $x_7$ of -0.081 means that for each 1% increase in percentage of rushing plays, the expected number of wins increases by 0.194, when team passing yards and opponent rushing yards are held constant.
+
 ### Question 4
 
 A team with $x_2$ = 2000 yards, $x_7$ = 48 percent,  and $x_8$ = 2350 yards would like to estimate the number of games it would win.  Also provide a relevant interval for this estimate with 95% confidence.
+
+```{r pred_int}
+new_data = data_frame(x2 = c(2000), x7 = c(48), x8 = c(2350))
+predict.lm(lm_nfl, new_data, level = 0.95, interval = "prediction")
+```
+
+This team would be estimated to win 3.4 games, with a 95% confidence interval of -0.5 to 7.3 games. Because number of wins is discrete and cannot be negative, this would be interpreted as a range of 0 to 7 wins.
 
 ### Question 5
 
 Using  the  output  for  the  multiple  linear  regression  model  from  part  2,  answer  the following  question  from  a  client:   “Is  this  regression  model  useful  in  predicting  the number  of  wins  during  the  1976  season?”  Be  sure  to  write  the  null  and  alternative hypotheses, state the value of the test statistic, state the p-value, and state a relevant conclusion.  What is the critical value associated with this hypothesis test?  Perform the test at 0.05 significance level.
 
+```{r summary}
+summary(lm_nfl)
+```
+
+The null hypothesis is $H_0: \beta_2 = \beta_7 = \beta_8 = 0$, and the alternative is $H_a: \beta_j \not= 0$ for some $j$ in $(2, 7, 8)$.
+
+The value of the test statistic is 29.44 on 3 and 24 degrees of freedom, and the associated p-value is 3.273e-8. The critical value is F at $\alpha = 0.05$ with 3 and 24 degrees of freedom, calculated below to be 0.12.
+
+```{r critical_val}
+qf(0.05, 3, 24)
+```
+
+Because the $F_0$ associated with this model is greater than the critical value (and because the p-value is < 0.05), we reject the null hypothesis and conclude that at least one regressor contributes significantly to the model. Therefore the model is useful in predicting the number of wins during the 1976 season.
+
 ### Question 6
 
 Report the value of the t statistic for the predictor $x_7$.  What is the relevant conclusion from this t statistic?  Also report the critical value for this hypothesis test.  Perform the test at 0.05 significance level.
+
+The test statistic for the predictor $x_7$ is $t_0 = \frac{\hat\beta_7 - 0}{se(\hat\beta_7)} = \frac{0.19396}{0.088233} = 2.198$. The critical value is 2.06, found below using $\alpha = 0.05$ and 24 degrees of freedom.
+
+```{r}
+qt(0.975, 24)
+```
+
+Because the t-statistic is greater than the critical value, we reject the null hypothesis ($H_0: \beta_7 = 0$) and conclude that the x7 predictor is significant to the model and cannot be dropped in the presence of the x2 and x8 predictors.
 
 ### Question 7
 
 Check  the  regression  assumptions  by  creating  a  residual  plot,  an  ACF  plot  of  the residuals, and a QQ plot of the residuals.  Comment on these plots.
 
+```{r resid}
+plot(lm_nfl$fitted.values,lm_nfl$residuals, main="Plot of Residuals against Fitted Values")
+abline(h=0,col="red")
+```
+
+```{r acf}
+acf(lm_nfl$residuals, main = "ACF of Residuals")
+```
+
+```{r qqplot}
+qqnorm(lm_nfl$residuals)
+qqline(lm_nfl$residuals, col="red")
+```
+
+The residual plot shows no pattern and aligns with the assumptions of error terms having mean 0 and constant variance. The ACF plot has no significant non-zero lags, supporting the assumption that error terms are independent/uncorrelated. The normal qq plot deviates a bit from the ideal, but not enough to raise serious concerns about the assumption that error terms follow a normal distribution.
+
 ### Question 8
 
 Consider  adding  another  predictor, $x_1$,  the  team’s  rushing  yards  for  the  season,  to the model.  Interpret the results of the t test for the coefficient of this predictor.  A classmate says:  “Since the result of the t test is insignificant, the team’s rushing yards for the season is not linearly related to the number of wins.” Do you agree with your classmate’s statement?
 
+```{r add_regressor}
+lm_nfl2 <- lm(y ~ x1 + x2 + x7 + x8, data = nfl)
+summary(lm_nfl2)
+```
+
+The t-statistic for x1 is 0.549, and the p-value is 0.589, which is higher than 0.05. Therefore we fail to reject the null hypothesis $H_0: \beta_1 = 0$ and conclude that x1 is not needed in the model in the presence of x2, x7, and x8.
+
+However, a classmate saying that the team's rushing yards for the season is not linearly related to the number of wins based on this result would not be accurate. There very well could be a linear relationship between wins and season rushing yards, but season rushing yards does not improve our model, as season passing yards, percent of rushing plays, and opponent's rushing yards already provide a fairly accurate prediction of season wins.
 
