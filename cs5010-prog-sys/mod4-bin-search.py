@@ -18,13 +18,28 @@ def binarySearch(item_list,target):
     search_min = 0
     search_max = len(item_list) - 1
     
+    if len(item_list) == 0:
+        return False #target can't be in an empty list
     
+    if search_max == search_min: #if list only has one element, just need to check if target equals that element
+        mid = getMid(search_min, search_max)
+        if target == item_list[search_min]:
+            return True
+        else:
+            return False
     
-    
+    while search_max > search_min:
+        mid = getMid(search_min, search_max)
+        if target == item_list[mid]:
+            return True #if target equals mid element, we can stop searching
+        elif target < item_list[mid]:
+            search_max = mid - 1 #search bottom half in next iteration
+        else:
+            search_min = mid + 1 #search top half in next iteration
     
     
 
 
 item_list = [1, 2, 4, 6, 7, 9]
 
-
+getMid(0, 0)
