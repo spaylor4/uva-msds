@@ -15,6 +15,7 @@ def getMid(start_ind, end_ind):
     return mid
 
 def binarySearch(item_list,target):
+    #item_list must be sorted list
     search_min = 0
     search_max = len(item_list) - 1
     
@@ -39,10 +40,24 @@ def binarySearch(item_list,target):
         return False  
 
 
-#
-item_list = [1, 2, 4, 6, 7, 9]
 
-binarySearch(item_list, 6)
+#tests from assignment
+list1 = [1,2,3,5,8]
 
-binarySearch(item_list, 3)
+print("Is 6 in " + str(list1) + "? " + str(binarySearch(list1, 6)))
+print("Is 5 in " + str(list1) + "? " + str(binarySearch(list1, 5)))
+print("Is 1 in " + str(list1) + "? " + str(binarySearch(list1, 1)))
+
+#a couple more tests
+list2 = [1, 2, 4, 6, 7, 9]
+
+print("Is 6 in " + str(list2) + "? " + str(binarySearch(list2, 6)))
+print("Is 3 in " + str(list2) + "? " + str(binarySearch(list2, 3)))
+
+binarySearch([], 3) #double check that this returns False as expected
+
+binarySearch(['a', 'c', 'd', 'x', 'z'], 'x') #works with letters too
+
+binarySearch(['a', 'c', 'd', 'x', 'z'], 'b')
+
 
