@@ -32,3 +32,5 @@ Keeping track of R functions and use cases covered in this course.
   ```
 
   The points come from the residuals, while the line represents the expected values under normality. If the points closely follow the line, the assumption of normality of error terms is met.
+
+- `boxcox(lin_mod, lambda = seq(start, end, step))` creates a Box-Cox plot for a linear model. The optional lambda parameter specifies the range and step of lambda values to be included in the plot. The boxcox function is in the MASS package, so `library(MASS)` must be called first.
