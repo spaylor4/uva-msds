@@ -1,0 +1,21 @@
+### Module 4: Intro to Searching, Sorting, and Data Wrangling
+
+- Sequential (or linear) search algorithm starts at the beginning of a list and searches until the target is found or the end of the list is reached.
+  - Best case: target found in first place searched (1); worst case: target found in last element searched (n). This means sequential search order class is O(n).
+  - Simple to code and understand, but not most efficient.
+- Binary search algorithm requires the list to be sorted, and eliminates half of the items with each comparison. Algorithm first finds midpoint of list and compares to target. If the target is greater than the midpoint, it then repeats the process in the upper half and vice versa.
+  - Complexity is O(log n), specifically log base 2.
+  - Faster than linear search except for small arrays, but requires that list be sorted. If the list is unsorted, a sequential search will be faster than sorting and then performing a binary search.
+  - Sorting list costs O(n log n) using fastest sorting algorithm, so sorting and searching once is O(n log n) + O(log n) = O(n log n). Therefore sorting + binary search overtakes performance of linear search at n searches.
+- All search algorithms have a best, worst, and average case scenario. Generally care more about the worst case than the best/avg.
+- Two ways to sort lists in Python:
+  - `sorted(list, key = key, reverse = False)` returns the list sorted by the given key (reverse = True for highest to lowest).
+  - `list.sort(key = key, reverse = False)` sorts the list in place.
+  - The key argument can be a user-defined function, which is useful for sorting objects of a class by a certain attribute.
+  - Because tuples are immutable, you must use `sorted(tuple)` rather than `tuple.sort()`, and it will return a sorted list rather than a sorted tuple.
+- Numpy library is particularly useful for manipulating n-dimensional arrays (equivalent to matrices in linear algebra). Extends native Python list functionality (which doesn't scale well for more than one dimension).
+  - Arrays are memory-efficient containers, so a numerical operations on a 1-D array are faster than a base python list.
+  - `numpy.linalg` has useful linear algebra functions like `eye(n)` for an identity matrix of size n-by-n and `solve(a, b)` for returning solutions to the system ax = b.
+  - Numpy array dimensions can be reshaped (for example, a 1x12 array can be reshaped into a 3x4 array). The `vstack(p, q)` and `hstack(p, q)` functions allow two arrays to be vertically and horizontally stacked.
+- Pandas makes working with relational/labeled data easier.
+  - Two main data structures: Series and DataFrame.
