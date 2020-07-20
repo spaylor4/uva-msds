@@ -60,7 +60,7 @@
 
 - Derived classes inherit from and extend base classes. This is sometimes called an "is a" relationship, since the derived class object is a base class object (but not vice versa).
 
-  - The first line of the init function for a derived class will call the init function of the base class:
+  - The first line of the init function for a derived class needs to call the init function of the base class:
 
     ```python
     class DerivedClass(BaseClass):
@@ -70,6 +70,8 @@
     ```
 
   - Instances of the derived class will have all the attributes and methods available to instances of the base class.
+
+  - There can be many levels of subclasses (sub-subclasses, etc.). For a sub-subclass, you only need to call the init method of its parent (the subclass), not the parent and grandparent.
 
 ### Module 3: Intro to Python, Part III
 
@@ -121,3 +123,5 @@
   Python has an exception [hierarchy](https://docs.python.org/3/library/exceptions.html#exception-hierarchy), so if you want one except statement for a subclass exception and another except statement for its parent class exception, you must put the subclass except statement first.
 
 - Further [reading](https://jakevdp.github.io/PythonDataScienceHandbook/01.06-errors-and-debugging.html) on jupyter notebook error handling and debugging.
+
+- TypeErrors occur when an operation or function is applied to an object of inappropriate type (e.g. int instead of list). ValueErrors occur when an operation or function receives an object that has the right type but an inappropriate value (e.g. an out of bounds error such as a negative integer when only positive integers are allowed).
