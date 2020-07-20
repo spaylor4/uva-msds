@@ -56,6 +56,11 @@ pairs(nfl, lower.panel = NULL)
 
 (c) I would first consider x1 and x2 (season passing and rushing yards), followed by x8 (opponent rushing yards), and x5 (turnover differential).
 
+```{r}
+cor(nfl)
+```
+
+
 ### Question 2
 
 Regardless of your answer to the previous question, fit a multiple regression model for the number of games won against the following three predictors:  the team’s passing yardage, the percentage of rushing plays, and the opponents’ yards rushing.  Write the estimated regression equation.
@@ -94,10 +99,10 @@ summary(lm_nfl)
 
 The null hypothesis is $H_0: \beta_2 = \beta_7 = \beta_8 = 0$, and the alternative is $H_a: \beta_j \not= 0$ for some $j$ in $(2, 7, 8)$.
 
-The value of the test statistic is 29.44 on 3 and 24 degrees of freedom, and the associated p-value is 3.273e-8. The critical value is F at $\alpha = 0.05$ with 3 and 24 degrees of freedom, calculated below to be 0.12.
+The value of the test statistic is 29.44 on 3 and 24 degrees of freedom, and the associated p-value is 3.273e-8. The critical value is F at $\alpha = 0.05$ with 3 and 24 degrees of freedom, calculated below to be 3.01.
 
 ```{r critical_val}
-qf(0.05, 3, 24)
+qf(0.95, 3, 24)
 ```
 
 Because the $F_0$ associated with this model is greater than the critical value (and because the p-value is < 0.05), we reject the null hypothesis and conclude that at least one regressor contributes significantly to the model. Therefore the model is useful in predicting the number of wins during the 1976 season.
