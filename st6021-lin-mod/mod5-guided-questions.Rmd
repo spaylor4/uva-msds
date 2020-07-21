@@ -1,0 +1,80 @@
+---
+title: "Module 5 Guided Question Set"
+author: "Shannon Paylor"
+date: "7/21/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(faraway)
+```
+
+## Question Set Overview
+
+Car drivers like to adjust the seat position for their own comfort. Car designers find it helpful to know where different drivers will position the seat. Researchers at the HuMoSim laboratory at the University of Michigan collected data on 38 drivers. The response variable is hipcenter, the horizontal distance of the midpoint of the hips from a fixed location in the car in mm. They measured the following eight predictors:
+
+* x1: _Age_.  Age in years
+
+* x2: _Weight_.  Weight in pounds
+
+* x3: _HtShoes_.  Height with shoes in cm
+
+* x4: _Ht_.  Height without shoes in cm
+
+* x5: _Seated_.  Seated height in cm
+
+* x6: _Arm_.  Arm length in cm
+
+* x7: _Thigh_.  Thigh length in cm
+
+* x8: _Leg_.  Lower leg length in cm
+
+The data are from the faraway package in R. After installing the faraway package, load the seatpos dataset from the faraway package.
+
+### Question 1
+
+Fit the full model with all the predictors.  Using the summary()function, comment on the results of the t-tests and ANOVA F test from the output.  Also report the $R^2$ of the model.
+
+### Question 2
+
+Briefly explain why, based on your output from part 1, you suspect the model showssigns of multicollinearity.
+
+### Question 3
+
+Provide the output for all the pairwise correlations among the predictors.  Commentbriefly on the pairwise correlations.
+
+### Question 4
+
+Check  the  variance  inflation  factors  (VIFs).   What  do  these  values  indicate  aboutmulticollinearity?
+
+### Question 5
+
+Looking at the data,  we may want to look at the correlations for the variables thatdescribe  length  of  body  parts:HtShoes,Ht,Seated,Arm,Thigh,  andLeg.   Use  thefollowing code:round(cor(seatpos[,3:8]),3) ##notice in your dataframe that the##6 variables we want pairwise correlations are in the 3rd to 8th##columns of the dataset. seatpos[,3:8] says we want to use the##values from all rows and columns 3 to 8 of the dataframe.Comment on the correlations of these six predictors.
+
+### Question 6
+
+Since all the six predictors from the previous part are highly correlated, you may decideto just use one of the predictors and remove the other five from the model.  Decidewhich predictor out of the six you want to keep, and briefly explain your choice.
+
+### Question 7
+
+Based on your choice in part 6, fit a multiple regression with your choice of predictorto keep, along with the predictorsx1=Ageandx2=Weight.  Check the VIFs for thismodel.  Comment on whether we still have an issue with multicollinearity.
+
+### Question 8
+
+Conduct  a  partialFtest  to  investigate  if  the  predictors  you  dropped  from  the  fullmodel were jointly insignificant.  Be sure to state a relevant conclusion.
+
+### Question 9
+
+Produce a plot of residuals against fitted values for your model from part 7.  Based onthe residual plot, comment on the assumptions for the multiple regression model.  Alsoproduce an ACF plot and QQ plot of the residuals, and comment on the plots.
+
+### Question 10
+
+Based  on  your  results,  write  your  estimated  regression  equation  from  part  7.   Alsoreport theR2of this model, and compare with theR2you reported in part 1, for themodel with all predictors.  Also comment on the adjustedR2for both models.
+
+### Question 11
+
+Suppose  there  was  measurement  error  in  the  response  variable,hipcenter.   Add  thismeasurement error with standard deviation 10mm to the response.  Use the followingcode to add the measurement error to the response:hip.error<-hipcenter+10*rnorm(38) ##adds an error term##that is N(0,10^2) to the 38 observationsThen, fit the model with hip.error as the response with all the predictors.  Comparethe estimated coefficients of this model with the coefficients of the model from part 1,with no measurement error.  Also compare the standard errors of the coefficients, andtheR2.
+
+
