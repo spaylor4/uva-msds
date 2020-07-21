@@ -9,11 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(faraway)
+
+seatpos <- seatpos
 ```
 
 ## Question Set Overview
 
-Car drivers like to adjust the seat position for their own comfort. Car designers find it helpful to know where different drivers will position the seat. Researchers at the HuMoSim laboratory at the University of Michigan collected data on 38 drivers. The response variable is hipcenter, the horizontal distance of the midpoint of the hips from a fixed location in the car in mm. They measured the following eight predictors:
+Car drivers like to adjust the seat position for their own comfort. Car designers find it helpful to know where different drivers will position the seat. Researchers at the HuMoSim laboratory at the University of Michigan collected data on 38 drivers. The response variable is _hipcenter_, the horizontal distance of the midpoint of the hips from a fixed location in the car in mm. They measured the following eight predictors:
 
 * x1: _Age_.  Age in years
 
@@ -35,46 +37,152 @@ The data are from the faraway package in R. After installing the faraway package
 
 ### Question 1
 
-Fit the full model with all the predictors.  Using the summary()function, comment on the results of the t-tests and ANOVA F test from the output.  Also report the $R^2$ of the model.
+Fit the full model with all the predictors.  Using the summary() function, comment on the results of the t-tests and ANOVA F test from the output.  Also report the $R^2$ of the model.
+
+```{r full_model}
+full_mod <- lm(hipcenter ~ ., data = seatpos)
+summary(full_mod)
+```
+
+The t-tests are not significant for any of the regressors, meaning that any one variable can be dropped in the presence of the other regressors. The ANOVA F test, on the other hand, is significant, with a p-value of 1.306e-05.
+
+The $R^2$ of the model is 0.6866, and the adjusted $R^2$ is 0.6001. This means that the model explains ~69% of the variance in the response variable hipcenter.
 
 ### Question 2
 
-Briefly explain why, based on your output from part 1, you suspect the model showssigns of multicollinearity.
+Briefly explain why, based on your output from part 1, you suspect the model shows signs of multicollinearity.
+
+Based on the output from part 1, there is likely multicollinearity among the x's because the ANOVA F test is significant but no individual variable t-tests are significant. This means that the variables together are predictive, but individually none are predictive when all are included.
 
 ### Question 3
 
-Provide the output for all the pairwise correlations among the predictors.  Commentbriefly on the pairwise correlations.
+Provide the output for all the pairwise correlations among the predictors.  Comment briefly on the pairwise correlations.
+
+```{r correlation_matrix}
+cor(dplyr::select(seatpos, !hipcenter))
+```
+
+Aside from Age, all other regressors have fairly strong pairwise correlations with each other.
 
 ### Question 4
 
-Check  the  variance  inflation  factors  (VIFs).   What  do  these  values  indicate  aboutmulticollinearity?
+Check  the  variance  inflation  factors  (VIFs).   What  do  these  values  indicate  about multicollinearity?
+
+```{r vif}
+vif(full_mod)
+```
+
+The VIFs for both HtShoes and Ht indicate strong evidence of multicollinearity in the data.
 
 ### Question 5
 
-Looking at the data,  we may want to look at the correlations for the variables thatdescribe  length  of  body  parts:HtShoes,Ht,Seated,Arm,Thigh,  andLeg.   Use  thefollowing code:round(cor(seatpos[,3:8]),3) ##notice in your dataframe that the##6 variables we want pairwise correlations are in the 3rd to 8th##columns of the dataset. seatpos[,3:8] says we want to use the##values from all rows and columns 3 to 8 of the dataframe.Comment on the correlations of these six predictors.
+Looking at the data, we may want to look at the correlations for the variables that describe  length  of  body  parts: HtShoes, Ht, Seated, Arm, Thigh, and Leg. Use the following code: 
+```
+round(cor(seatpos[,3:8]),3) 
+##notice in your dataframe that the
+##6 variables we want pairwise correlations are in the 3rd to 8th
+##columns of the dataset. seatpos[,3:8] says we want to use the
+##values from all rows and columns 3 to 8 of the dataframe
+```
+
+Comment on the correlations of these six predictors.
+
+```{r cor_body_parts}
+round(cor(seatpos[,3:8]),3) 
+```
+
+All of the body part predictors are highly correlated, particularly all combinations of HtShoes, Ht, Seated, and Leg.
 
 ### Question 6
 
-Since all the six predictors from the previous part are highly correlated, you may decideto just use one of the predictors and remove the other five from the model.  Decidewhich predictor out of the six you want to keep, and briefly explain your choice.
+Since all the six predictors from the previous part are highly correlated, you may decide to just use one of the predictors and remove the other five from the model.  Decide which predictor out of the six you want to keep, and briefly explain your choice.
+
+```{r}
+cor(seatpos)
+```
+
+I would choose to use height because it has the highest correlation with hipcenter (above).
 
 ### Question 7
 
-Based on your choice in part 6, fit a multiple regression with your choice of predictorto keep, along with the predictorsx1=Ageandx2=Weight.  Check the VIFs for thismodel.  Comment on whether we still have an issue with multicollinearity.
+Based on your choice in part 6, fit a multiple regression with your choice of predictor to keep, along with the predictors x1=Age and x2=Weight.  Check the VIFs for this model.  Comment on whether we still have an issue with multicollinearity.
+
+```{r reduced_model}
+reduced_mod <- lm(hipcenter ~ Age + Weight + Ht, data = seatpos)
+vif(reduced_mod)
+```
+
+With only these three regressors, there is no longer an issue with multicollinearity, as all VIFs are < 10.
 
 ### Question 8
 
-Conduct  a  partialFtest  to  investigate  if  the  predictors  you  dropped  from  the  fullmodel were jointly insignificant.  Be sure to state a relevant conclusion.
+Conduct  a  partial F test  to  investigate  if  the  predictors  you  dropped  from  the  full model were jointly insignificant.  Be sure to state a relevant conclusion.
+
+```{r partial_F}
+anova(reduced_mod, full_mod)
+```
+
+The partial F test produced an insignificant Pr(>F) > 0.05, so we fail to reject the null hypothesis. This means that there is no statistically significant evidence that any of the regression coefficients for HtShoes, Seated, Arm, or Thigh are non-zero. Therefore the partial F test supports the reduced model with those predictors removed.
 
 ### Question 9
 
-Produce a plot of residuals against fitted values for your model from part 7.  Based onthe residual plot, comment on the assumptions for the multiple regression model.  Alsoproduce an ACF plot and QQ plot of the residuals, and comment on the plots.
+Produce a plot of residuals against fitted values for your model from part 7.  Based on the residual plot, comment on the assumptions for the multiple regression model.  Also produce an ACF plot and QQ plot of the residuals, and comment on the plots.
+
+```{r residual_plot}
+plot(reduced_mod$fitted.values, reduced_mod$residuals, main = "Residuals Plot, Reduced Model")
+abline(h=0, col='red')
+```
+
+Based on this residual plot, the model satisfies the assumptions of error terms having mean zero and constant variance.
+
+```{r acf}
+acf(reduced_mod$residuals, main = "ACF of Residuals")
+```
+
+The reduced model does not satisfy the assumption of independence of error terms, as evidenced by the lag 11 bar above exceeding the significance band.
+
+```{r}
+qqnorm(reduced_mod$residuals)
+qqline(reduced_mod$residuals, col="red")
+```
+
+The normal qq plot for this model shows that the assumption of normality of error terms is satisfied.
 
 ### Question 10
 
-Based  on  your  results,  write  your  estimated  regression  equation  from  part  7.   Alsoreport theR2of this model, and compare with theR2you reported in part 1, for themodel with all predictors.  Also comment on the adjustedR2for both models.
+Based  on  your  results,  write  your  estimated  regression  equation  from  part  7.   Also report the $R^2$ of this model, and compare with the $R^2$ you reported in part 1, for the model with all predictors.  Also comment on the adjusted $R^2$ for both models.
+
+```{r}
+summary(reduced_mod)
+```
+
+The estimated regression equation for this model is $hipcenter = 528.3 + 0.52*Age + 0.004*Weight - 4.21*Ht$.
+
+The $R^2$ of this model is 0.6562, which is smaller than the value of 0.69 reported in question 1 for the full model. However, the adjusted $R^2$ for this model is 0.6258, which is higher than the value of 0.6001 reported for the full model. This is the multiple $R^2$ can never decrease when more terms are added, even if they are not significant to the model.
 
 ### Question 11
 
-Suppose  there  was  measurement  error  in  the  response  variable,hipcenter.   Add  thismeasurement error with standard deviation 10mm to the response.  Use the followingcode to add the measurement error to the response:hip.error<-hipcenter+10*rnorm(38) ##adds an error term##that is N(0,10^2) to the 38 observationsThen, fit the model with hip.error as the response with all the predictors.  Comparethe estimated coefficients of this model with the coefficients of the model from part 1,with no measurement error.  Also compare the standard errors of the coefficients, andtheR2.
+Suppose  there  was  measurement  error  in  the  response  variable, hipcenter.   Add  this measurement error with standard deviation 10mm to the response.  Use the following code to add the measurement error to the response: 
+
+```
+hip.error<-hipcenter+10*rnorm(38) 
+##adds an error term##that is N(0,10^2) to the 38 observations 
+```
+
+Then, fit the model with hip.error as the response with all the predictors.  Compare the estimated coefficients of this model with the coefficients of the model from part 1, with no measurement error.  Also compare the standard errors of the coefficients, and the $R^2$.
+
+```{r measurement_error}
+seatpos$hip.error<-seatpos$hipcenter+10*rnorm(38)
+lm_hip_err <- lm(hip.error ~ Age + Weight + HtShoes + Ht + Seated + Arm + Thigh + Leg, data = seatpos)
+summary(lm_hip_err)
+```
+
+The estimated coefficients of this model differ from those in question 1, but they still all fail the t-test and any can be dropped in the presence of all the others. Also, the standard errors of the coefficients are higher in this model than in the previous model for each coefficient.
+
+Both the $R^2$ and adjusted $R^2$ are lower in this model with the measurement error adjustment than they were in the full model in question 1 with no error adjustment.
+
+```{r}
+summary(full_mod)
+```
 
 
