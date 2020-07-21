@@ -22,7 +22,7 @@ Keeping track of R functions and use cases covered in this course.
 
 #### Module 3: Model Diagnostics & Remedial Measures in SLR
 
-- `acf(lin_mod, main = "ACF of Residuals")` creates an ACF plot for a linear model to test independence of error terms. The horizontal blue dotted lines indicate the significance level, so if any non-zero lags exceed those lines, there is evidence of correlation among error terms.
+- `acf(lin_mod$residuals, main = "ACF of Residuals")` creates an ACF plot for a linear model to test independence of error terms. The horizontal blue dotted lines indicate the significance level, so if any non-zero lags exceed those lines, there is evidence of correlation among error terms.
 
 - To create a normal probability plot for a linear model, use these two lines:
 
@@ -39,3 +39,4 @@ Keeping track of R functions and use cases covered in this course.
 
 - `anova(reduced_model, full_model)` performs a partial F test to assess whether a set of predictors can be dropped. If the Pr(> F) is large, $H_0$ is supported (the predictors removed in the reduced model can be dropped), and if Pr(>F) is small (less than $\alpha$), $H_a$ is supported (the predictors cannot be dropped and the full model is supported).
 - `vif(reg_mod)` will give the variance inflation factors (VIFs) for the given regression model. Must first call `library(faraway)` to load the function.
+
