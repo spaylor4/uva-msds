@@ -12,7 +12,9 @@ import pandas as pd
 
 url = "https://www.fool.com/investing/2020/07/21/3-growth-stocks-robinhood-investors-cant-stop-buyi.aspx"
   
-  
+
+
+
 class MotleyFoolArticle:
     def __init__(self, url, soup = None):
         #url is string link to article
@@ -70,19 +72,35 @@ art1_df = art1.scrape_stocks()
 
 # scrape articles off homepage
 
-homepage = "https://www.fool.com"
+class MotleyFoolHomepage:
+    def __init__(self, url, soup = None):
+        #url is string link to article
+        #soup is beautiful soup html of article page
+        self.url = url
+        if soup is None:
+            r = requests.get(url)
+            soup = BeautifulSoup(r.text)
+        self.soup = soup
+        
+    def scrape_trending_links(self):
+        trending = self.soup.findAll(class_ = "hp-trending-articles-list")[0]
 
-r = requests.get(homepage)
-soup = BeautifulSoup(r.text)
+        trending_articles = trending.findAll("a")
+        
+        trending_links = []
+        for article in trending_articles:
+            link = article.get("href")
+            trending_links.append(self.url + link)
+            
+        return trending_links
+        
 
-trending = soup.findAll(class_ = "hp-trending-articles-list")[0]
+homepage_url = "https://www.fool.com"
+homepage = MotleyFoolHomepage(homepage_url)
 
-trending_articles = trending.findAll("a")
+links = homepage.scrape_trending_links()
 
-trending_links = []
-for article in trending_articles:
-    link = article.get("href")
-    trending_links.append(homepage + link)
+
 
 
 
