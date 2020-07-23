@@ -40,3 +40,11 @@ Keeping track of R functions and use cases covered in this course.
 - `anova(reduced_model, full_model)` performs a partial F test to assess whether a set of predictors can be dropped. If the Pr(> F) is large, $H_0$ is supported (the predictors removed in the reduced model can be dropped), and if Pr(>F) is small (less than $\alpha$), $H_a$ is supported (the predictors cannot be dropped and the full model is supported).
 - `vif(reg_mod)` will give the variance inflation factors (VIFs) for the given regression model. Must first call `library(faraway)` to load the function.
 
+#### Module 6: Categorical Predictors
+
+- `factor(column)` converts the column to a factor type, which is how R designates categorical variables. To check whether a given column is a factor type, use `is.factor(column)`.
+- `contrasts(column)` shows how R encodes a factor column with 0/1 dummy variables and shows which level is the reference class encoded as all zeros.
+- `levels(column)` shows the classes of a categorical/factor variable column. These can be reset using `levels(column) <- c("level1", "level2", ...)`. Furthermore, the reference class can be reset using `column <- relevel(column, ref = "ref_class_name")`.
+- `levene.test(response, categorical_pred)` performs a Levene test to check whether the variances of the categorical variable's classes are the same (null hypothesis) or not (alternative). If Levene's test returns a large p-value, fail to reject null and conclude that assumption of equal variances among classes is met. Need `library(lawstat)` to perform this test.
+- `glht(lin_model, linfct = mcp(Region = "Tukey"))` performs a Tukey's multiple comparisons test on a regression model. Like with a regression model, this can be assigned to a variable and `summary(glht_var)` can be called to see the output. Need `library(multcomp)` to perform this test.
+- `vcov(lin_model)` returns the variance-covariance matrix for a regression model.
