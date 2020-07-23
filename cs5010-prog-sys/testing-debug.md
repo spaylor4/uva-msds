@@ -3,6 +3,7 @@
 #### Testing & Verification
 
 - “Program testing can effectively show the presence of bugs but is hopeless for showing their absence.” -Edsger Dijkstra
+- Even if you're a very experience programmer, it's very difficult to find bugs just by reading code. Instead, you need to test it.
 - Formal verification involves proof, which is complex and difficult. Empirical testing involves showing that code works on several inputs, and it is much easier than proof (though harder than writing code).
   - Unit testing: test the smallest possible units of the spec for each flow path.
   - Integration testing: test that units work together.
@@ -10,6 +11,12 @@
 - Two types of unit testing:
   - Black box testing is based on specifications and only looks at inputs and outputs, not the code itself.
   - White box testing is based on the logic of the code and examines the different flow paths.
+- Requirement specifications are exact statements about what the system will be able to do. Design specifications are exact instructions for how the system will be built.
+- Verification is demonstrating that the code meets the requirements specifications (did we build the system right?). Validation is showing the code solves the problem the user wishes to solve (did we build the right system?).
+- Types of errors:
+  - Syntax: grammar of compiler is not followed (typos, missing parenthesis, etc.)
+  - Logic: program faithfully follows incorrect instructions (returning the wrong variable, etc.)
+  - Runtime errors: program cannot execute at runtime (divide by zero error, file not found error, etc.)
 
 #### Test-Driven Development (TDD) & Unit Testing
 
