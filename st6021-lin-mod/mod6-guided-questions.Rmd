@@ -1,0 +1,105 @@
+---
+title: "Module 6 Guided Question Set"
+author: "Shannon Paylor"
+date: "7/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+cereals <- read_tsv("cereals.txt")
+```
+
+## Question Set Overview
+
+For this question we will use the dataset “cereals.txt”. The dataset contains nutritional information on 77 brands of cereal. For this question, we will focus on the variables y=calories (number of calories per serving), x1=sugars (grams of sugars per serving), and mfr indicating the manufacturer of the cereal brand. The manufacturers are coded G=GeneralMills, K=Kellogg’s, and other=other manufacturers.
+
+#### Question 1
+
+Create a scatterplot of the number of calories per serving against the grams of sugars per serving for the 77 brands.  Overlay separate regression lines for each of the three manufacturers.   Based  only  on  the  scatterplot  and  the  regression  lines,  describe  the relationship between the variables of interest.
+
+```{r scatter}
+ggplot(data = cereals, mapping = aes(x = sugars, y = calories, color = mfr)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + xlab("Sugars (grams per serving)") + ylab("Calories per Serving") + ggtitle("Calories vs. Sugars per Serving, by Manufacturer")
+```
+
+Based on this scatterplot, it appears that there is a linear relationship between sugars and calories per serving for each of the three manufacturer classes. The slope of the line appears to be similar for Kellogg's and other, but General Mill's appears to have a flatter slope.
+
+#### Question 2
+
+Create a regression model with interactions, i.e., $y=\beta_0+\beta_1x_1+\beta_2I_1+\beta_3I_2+\beta_4x_1I_1+\beta_5x_1I_2+\epsilon$, where $I_1$ and $I_2$ are indicator variables where $I_1 = 1$ for a General Mills cereal and 0 otherwise, and $I_2 = 1$ for a Kellogg’s cereal and 0 otherwise.  Write down the estimated regression equation for this model.
+
+```{r regression}
+cereals$mfr <- factor(cereals$mfr)
+cereals$mfr <- relevel(cereals$mfr, ref = "other") #make "other" the reference class
+# contrasts(cereals$mfr)
+
+cereal_lm <- lm(calories ~ sugars*mfr, data = cereals)
+summary(cereal_lm)
+```
+
+The estimated regression equation for this model is $y = 85.9 + 2.9x_1 + 17.1I_1 + 2.3I_2 - 1.8x_1*I_1 - 0.2x_1*I_2$.
+
+#### Question 3
+
+Carry out the relevant hypothesis test to see if the interaction terms can be dropped. If  they  can  be  dropped,  re-fit  the  regression  model,  and  write  down  the  estimated regression equation for the model without interactions.
+
+```{r drop_interaction}
+no_interaction <- lm(calories ~ sugars + mfr, data = cereals)
+anova(no_interaction, cereal_lm)
+```
+
+In the partial F test of the reduced model with no interaction term compared to the full model, we fail to reject the null hypothesis, so we conclude that the interaction terms can be dropped. 
+
+```{r}
+summary(no_interaction)
+```
+
+
+The estimated regression equation without interactions is $y = 88.6 + 2.4x_1 + 3.6I_1 + 1.9I_2$.
+
+#### Question 4
+
+Assess  if  the  regression  assumptions  are  met,  for  the  model  you  will  recommend  to use.  Also, be sure to carry out Levene’s test of equality of variances since we have a categorical predictor.
+
+```{r residuals}
+plot(no_interaction$fitted.values, no_interaction$residuals, 
+     main = "Plot of Residuals vs. Fitted Values")
+abline(h=0, col = "red")
+```
+
+The residual plot shows that the model meets the assumption of error terms having mean 0 and constant variance.
+
+```{r acf}
+acf(no_interaction$residuals)
+```
+
+There is some evidence that the error terms may be correlated, as the lag 1 and lag 15 bars exceed the significance line in this plot. However, given that this is not time series data and that the bars barely exceed the confidence band, it's not overly concerning.
+
+```{r qq_plot}
+qqnorm(no_interaction$residuals) #points
+qqline(no_interaction$residuals, col="red") #line
+```
+
+The normal qq plot shows that the error terms are approximately normally distributed.
+
+```{r levene_test}
+library(lawstat)
+levene.test(cereals$calories, cereals$mfr)
+```
+
+The p-value from the Levene test is >0.05, so we fail to reject the null hypothesis and conclude that there is no evidence of different variances among the classes of mfr.
+
+#### Question 5
+
+Conduct pairwise comparisons for the difference in mean calories among all pairs of manufacturers for given values of grams of sugars, i.e.,
+(a)  General Mills and other manufacturers,
+(b)  Kellogg’s and other manufacturers,
+(c)  General Mills and Kellogg’s.
+
+```{r pairwise_comp}
+library(multcomp)
+summary(glht(no_interaction, linfct = mcp(mfr = "Tukey")))
+```
+
+None of the pairs of categories are significantly different from each other.
