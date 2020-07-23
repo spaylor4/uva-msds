@@ -101,7 +101,7 @@ Since all the six predictors from the previous part are highly correlated, you m
 cor(seatpos)
 ```
 
-I would choose to use height because it has the highest correlation with hipcenter (above).
+I would choose to use height because it has the highest correlation with hipcenter (above). Height is also more meaningful/interpretable to most people.
 
 ### Question 7
 
@@ -139,7 +139,7 @@ Based on this residual plot, the model satisfies the assumptions of error terms 
 acf(reduced_mod$residuals, main = "ACF of Residuals")
 ```
 
-The reduced model does not satisfy the assumption of independence of error terms, as evidenced by the lag 11 bar above exceeding the significance band.
+The reduced model does not satisfy the assumption of independence of error terms, as evidenced by the lag 11 bar above exceeding the significance band. The correlation at lag 11 is somewhat concerning, but not as much as lag 1 or 2.
 
 ```{r}
 qqnorm(reduced_mod$residuals)
