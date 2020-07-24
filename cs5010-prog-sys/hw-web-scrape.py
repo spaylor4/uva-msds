@@ -9,11 +9,13 @@ sep4hy
 #resources referenced:
 #https://programminghistorian.org/en/lessons/intro-to-beautiful-soup
 #https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+#https://seaborn.pydata.org/index.html
 
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd 
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 #have two types of pages I want to scrape
 #so creating a parent class to handle init/str methods, which are the same for both
@@ -153,11 +155,6 @@ class MotleyFoolArticle(SoupWebpage):
 
 #test classes/methods
 #rewrite into main?
-        
-# url = "https://www.fool.com/investing/2020/07/21/3-growth-stocks-robinhood-investors-cant-stop-buyi.aspx"
-
-# art1 = MotleyFoolArticle(url)
-# art1_df = art1.scrape_stocks()
 
 
 homepage_url = "https://www.fool.com"
@@ -182,6 +179,7 @@ homepage.get_watchlist_articles(['AMZN', 'AAPL'])
 
 
 ### create plots for report
+#bar chart
 motley = pd.read_csv("motley_fool_stock_mentions.csv")
 
 top10 = motley.groupby('stock_symbol')['company'].count().reset_index().sort_values(by = "company", ascending = False).head(10)
@@ -191,6 +189,24 @@ sns.set_style("white")
 ax = sns.barplot(x = "stock_symbol", y = "mentions", data = top10, color=sns.xkcd_rgb['light blue'])
 sns.despine()
 
+#heatmap
+motley['date'] = pd.to_datetime(motley['article_date']).dt.strftime('%d-%m-%Y')
+daily_mentions = motley.groupby(['date', 'stock_symbol'])['company'].count().reset_index()
+daily_mentions = daily_mentions.rename(columns = {'company': 'mentions'})
+
+sns.set(rc={'figure.figsize':(16.7,5.27)})
+
+ax = sns.heatmap(daily_mentions.pivot(index = 'date', columns = 'stock_symbol', values = 'mentions'), 
+            cmap = "Blues", vmin=0, vmax=daily_mentions['mentions'].max(), linewidths=0.2)
+
+colorbar = ax.collections[0].colorbar
+colorbar.set_ticks([0, 1, 2])
+colorbar.set_ticklabels(['0', '1', '2'])
+
+ax.set_ylabel('Date')
+ax.set_xlabel('Stock')
+
+plt.show()
 
 
 
