@@ -91,8 +91,10 @@ class MotleyFoolHomepage(SoupWebpage):
         #watchlist should be a list of stock symbols
         #self.article_mentions needs to be already populated for this to work
         if self.article_mentions.shape[0] == 0:
-            print('No articles have been scraped yet.')
-        else:
+            message = 'No articles have been scraped yet.'
+            print(message)
+            return message
+        elif any(item in watchlist for item in self.article_mentions['stock_symbol']):
             watch_df = self.article_mentions[self.article_mentions['stock_symbol'].isin(watchlist)]
             watch_df = watch_df[['title', 'article_link']].drop_duplicates() #want unique articles, not all stocks mentioned
             
@@ -102,7 +104,10 @@ class MotleyFoolHomepage(SoupWebpage):
                 
             print(message)
             return message
-                
+        else:
+            message = "No stocks on your watchlist were mentioned in the trending articles."
+            print(message)
+            return message
 
 #after scraping links to articles, want to scrape stock mentions from within those articles
 #another subclass of SoupWebpage
