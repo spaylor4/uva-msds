@@ -158,13 +158,14 @@ class MotleyFoolArticle(SoupWebpage):
 
 
 
-#test classes/methods
-#rewrite into main?
 
+### main functionality ###
 
+#create homepage instance
 homepage_url = "https://www.fool.com"
 homepage = MotleyFoolHomepage(homepage_url)
 
+#get trending links from homepage
 links = homepage.scrape_trending_links()
 
 filename = "motley_fool_stock_mentions.csv"
@@ -175,15 +176,18 @@ except:
     stocks_mentioned = pd.DataFrame({"title": [], "author": [], "author_username": [], "article_date": [], 
                                    "company": [], "stock_symbol": [], "quote_link": [], "article_link": []})
 
+#scrape stocks mentioned in articles
 new_mentions = homepage.scrape_stock_mentions(stocks_mentioned)
 
+#update and export data
 stocks_mentioned = stocks_mentioned.append(new_mentions)
 stocks_mentioned.to_csv(filename, index = False)
 
+#check for articles about watchlist stocks
 homepage.get_watchlist_articles(['AMZN', 'AAPL'])
 
 
-### create plots for report
+### create plots for report ###
 #bar chart
 motley = pd.read_csv("motley_fool_stock_mentions.csv")
 
