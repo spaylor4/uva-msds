@@ -1,0 +1,38 @@
+---
+title: "Module 7 Guided Questions"
+author: "Shannon Paylor"
+date: "7/25/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question Set Overview
+
+We will continue to use the “nfl.txt” data set from the tutorial for module 7.
+
+#### Question 1
+
+From the tutorial, the model with the “best” BIC has $x_2$, $x_7$, $x_8$ as predictors.  We will continue to work with this regression model for the rest of this question.
+
+#### Question 2
+
+The PRESS statistic can be used in model validation as well as a criteria for model selection.  Unfortunately, the `regsubsets()` function from the leaps package does not compute the PRESS statistic.  The PRESS statistic can be written as $PRESS = \sum{[y_i - \hat{y}_i]^2} = \sum(\frac{e_i}{1 - h_{ii}})^2$ where $h_{ii}$ denotes the $i$th diagonal element from the hat matrix. Write  a  function  that  computes  the  PRESS  statistic  for  a  regression  model. Hint: the diagonal elements from the hat matrix can be found using the `lm.influence()` function.
+
+#### Question 3
+
+Using the function you wrote in part 2, calculate the PRESS statistic for your regression model from part 1.  Calculate the $R^2_{Prediction}$ for this model,  and compare this value with its $R_2$.  What comments can you make about the likely predictive performance of this model?
+
+#### Question 4
+
+Delete half the observations (chosen at random), and refit the regression model. Calculate the $R^2_{Prediction}$ for this model. How well does this model predict the number of games won? Hint: the `sample()` function will be useful here.
+
+#### Question 5
+
+Based on the models you fitted from the previous 2 parts, compare the standard errors of the regression coefficients for both models.
+
+#### Question 6
+
+Using  both  models,  calculate  the  predicted  number  of  wins  for  all  the  NFL  teams. Compare these models in terms of how well they predict the number of wins for all the NFL teams by computing the $SS_{res}$ for both models.
