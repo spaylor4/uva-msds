@@ -19,8 +19,8 @@
 Are each of the following functional or non-functional requirements?
 
 - The reloading of the user statistics  performs 90% of the time below 100 ms. when tested on machines with the  performances specified in appendix G part 2 and the load below 10% for  the CPU, below 50% for memory and no active R/W disk operations. **Non-functional**
-- The application is written in C#. **Non-functional**
-- The main window of the application  has a blue (#00f) 10px border with pink (#fcc) filled circles, those  circles being placed at the inner edge of the border and being 3px in  diameter, separated by 20px from each other. **Functional**
+- The application is written in C#. **Ambiguous** - could be a requirement if it's a client ask, but could be part of design if it is the wish of the lead developer
+- The main window of the application  has a blue (#00f) 10px border with pink (#fcc) filled circles, those  circles being placed at the inner edge of the border and being 3px in  diameter, separated by 20px from each other. **Non-functional**
 - The vehicle tracking system measures the speed with a precision of ±0.016 mph. **Non-functional**
 - The vehicle tracking system measures the speed of the vehicle. **Functional**
-- The pages of the website take 850 ms. to load. **Non-functional**
+- The pages of the website take 850 ms. to load. **Not a requirement** because it's dependent on hardware
