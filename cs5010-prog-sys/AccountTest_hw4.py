@@ -51,25 +51,56 @@ class Checking(Account):
 #write unit tests
             
 class TestAccount(unittest.TestCase):
+    def test_init_balance(self):
+        my_checking = Checking("123", 2000, 3)
+        
+        self.assertEqual(my_checking.balance, 2000)
+        
+    def test_init_account_num(self):
+        my_checking = Checking("123", 2000, 3)
+        
+        self.assertEqual(my_checking.accountNumber, "123")
+    
     def test_getFee_1(self):
-        self.assertEqual(first, second)
+        my_checking = Checking("123", 2000, 3)
+        my_fee = my_checking.getFee()
+        
+        self.assertEqual(my_fee, 3)
         
     def test_getFee_2(self):
-        self.assertEqual(first, second)
+        my_checking = Checking("345", 5000, 0.5)
+        my_fee = my_checking.getFee()
+        
+        self.assertEqual(my_fee, 0.5)
         
     def test_deposit_1(self):
-        self.assertEqual(first, second)
+        my_checking = Checking("123", 2000, 3)
+        my_checking.deposit(1000)
+        my_checking.deposit(1000)
+        
+        self.assertEqual(my_checking.balance, 4000)
         
     def test_deposit_2(self):
-        self.assertEqual(first, second)
+        my_checking = Checking("345", 5000, 0.5)
+        my_checking.deposit(100.5)
+        my_checking.deposit(100.25)
         
-    def test_withdraw_1(self):
-        self.assertEqual(first, second)
+        self.assertEqual(my_checking.balance, 5200.75)
         
-    def test_withdraw_2(self):
-        self.assertEqual(first, second)
+    def test_withdraw_sufficient_funds(self):
+        my_checking = Checking("123", 2000, 3)
+        my_checking.withdraw(1000)
+        
+        self.assertEqual(my_checking.balance, 997)
+        
+    def test_withdraw_insufficient_funds(self):
+        my_checking = Checking("123", 2000, 3)
+        my_checking.withdraw(2000)
+        
+        self.assertEqual(my_checking.balance, 2000)
             
-
+if __name__ == '__main__':
+    unittest.main()
 
 
 
