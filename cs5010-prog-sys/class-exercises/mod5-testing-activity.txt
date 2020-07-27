@@ -1,0 +1,69 @@
+Module 5 Live Session Exercise: Testing Activity
+Part 3: intentionally insert errors for someone else's tests to find; run my tests on someone else's code
+
+Shannon Paylor (sep4hy)
+Project group: Alex Stern (acs4wq), Congxin Xu (cx2rx), and Taylor Rohrich (trr2as)
+
+Results of running my test suite on Alex's buggy version of the BookLover class:
+
+.FF..FF.
+======================================================================
+FAIL: test_add_book_num_books (__main__.BookLoverTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/shannon/Documents/UVA/uva-msds/cs5010-prog-sys/BookLoverTest.py", line 36, in test_add_book_num_books
+    self.assertEqual(book_lover1.numBooks, 4)
+AssertionError: 1 != 4
+
+======================================================================
+FAIL: test_fav_books (__main__.BookLoverTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/shannon/Documents/UVA/uva-msds/cs5010-prog-sys/BookLoverTest.py", line 75, in test_fav_books
+    self.assertEqual(book_lover1.favBooks(), [("Grant", 4), ("Becoming", 4)])
+AssertionError: Lists differ: [] != [('Grant', 4), ('Becoming', 4)]
+
+Second list contains 2 additional elements.
+First extra element 0:
+('Grant', 4)
+
+- []
++ [('Grant', 4), ('Becoming', 4)]
+
+======================================================================
+FAIL: test_has_read_true (__main__.BookLoverTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/shannon/Documents/UVA/uva-msds/cs5010-prog-sys/BookLoverTest.py", line 41, in test_has_read_true
+    self.assertTrue(book_lover1.hasRead("Grant"))
+AssertionError: None is not true
+
+======================================================================
+FAIL: test_num_books_many_books (__main__.BookLoverTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/shannon/Documents/UVA/uva-msds/cs5010-prog-sys/BookLoverTest.py", line 60, in test_num_books_many_books
+    self.assertEqual(book_lover1.numBooksRead(), 4)
+AssertionError: 1 != 4
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.005s
+
+FAILED (failures=4)
+
+
+My tests found 3/3 errors in Alex's buggy code.
+
+
+______________________________________________________________________
+______________________________________________________________________
+______________________________________________________________________
+
+Part 4: discussion of tests we may need for our semester Project
+
+# Check parser helper function to see if it handles errors while scraping
+# Check if the data type of columns in pandas row are appropriate (e.g date time etc)
+# Check if summary queries on pandas data frame work (e.g if mean works etc.)
+# Check if na's are removed from dataset
+# check if calculated columns are computed correctly
+# Validation on statistical computations (if we try to fit linear models)

@@ -1,0 +1,7 @@
+runfile('/Users/shannon/Documents/UVA/uva-msds/cs5010-prog-sys/AStudent_Class_addGrade_test.py', wdir='/Users/shannon/Documents/UVA/uva-msds/cs5010-prog-sys')
+Reloaded modules: AStudent_Class
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
