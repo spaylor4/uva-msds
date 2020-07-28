@@ -79,3 +79,17 @@ Keeping track of R functions and use cases covered in this course.
   - To fit an intercept-only model, use `lm(y ~ 1, data)`
   - `step` function only considers first order models (no interactions or higher order terms). It also does not check if the regression assumptions are met and does not guarantee that the best model will be identified.
   - `step` can lead to different final models if the starting point is different.
+
+#### Module 8: Model Diagnostics & Remedial Measures in MLR
+
+- `rstandard(lin_model)` gives the studentized residuals for a given linear model.
+- `rstudent(lin_model)` gives the externally studentized residuals for a given linear model.
+  - Critical value using Bonferroni procedure for outliers in response variable based on externally studentized residuals is `qt(1-0.05/(2*n), n-p-1)`. Any externally studentized residuals with magnitude larger than this $t$ value are outliers.
+- `lm.influence(lin_mod)$hat` gives leverages for a particular model.
+  - Leverages greater than $\frac{2p}{n}$ are considered outlying in the predictor.
+- `dffits(lin_mod)` gives the DFFITS of a given model. 
+  - Observations are considered influential if the magnitude of their DFFITS is greater than $2\sqrt{\frac{p}{n}}$.
+- `dfbetas(lin_mod)` gives the DFBETAS of a given model.
+  - Observations are considered influential if the magnitude of their DFBETAS is greater than $\frac{2}{\sqrt{n}}$.
+- `cooks.distance(lin_mod)` gives the Cook's distance for a given model.
+  - Observations are considered influential if their Cook's distance is greater than `qf(0.5, p. n-p)`.
