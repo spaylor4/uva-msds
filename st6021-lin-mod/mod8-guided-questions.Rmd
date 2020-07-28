@@ -7,6 +7,9 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+nfl <- read_table2("nfl.txt")
 ```
 
 ## Question Set Overview
@@ -33,11 +36,11 @@ In this guided question set, we will use the “nfl.txt” data set that we used
 
 * x9:  Opponents’ passing yards (season)
 
-We will continue to regress the number of games won against three predictors: passing yards,x2, percent rushing, x7, and opponents’ rushing yards in the season, x8.
+We will continue to regress the number of games won against three predictors: passing yards, x2, percent rushing, x7, and opponents’ rushing yards in the season, x8.
 
 #### Question 1
 
-For this first question, you will generate partial regression plots for each of the predictors.  As a reminder, a partial regression plot for predictor $x_k$ is obtained by:
+For this first question, you will generate partial regression plots for each of the predictors. As a reminder, a partial regression plot for predictor $x_k$ is obtained by:
 
 * Regressing y against the other predictors, $x_1$,···, $x_k−1$,that are already in the model and obtaining the residuals, $e(y|x_1,···, x_{k−1})$.
 
@@ -47,23 +50,102 @@ For this first question, you will generate partial regression plots for each of 
 
 (a) Produce the partial regression plot for $x_2$.  Interpret what this partial regression is telling us.
 
+```{r}
+reg_x2 <- lm(x2 ~ x7 + x8, data = nfl)
+reg_y_part <- lm(y ~ x7 + x8, data = nfl)
+
+plot(reg_y_part$residuals, reg_x2$residuals, main = "Partial Regression Plot for x2")
+```
+
+The clear linear pattern of this partial residual plot indicates that there may be a linear relationship between $x_2$ and y.
+
 (b) Fit a linear regression for the partial residual plot for $x_2$. Report the estimated coefficients.
+
+```{r}
+part_lm <- lm(reg_y_part$residuals ~ reg_x2$residuals)
+summary(part_lm)
+```
+
+The estimated coefficient for $e(x_k|x_1,···, x_{k−1})$ is 0.0036, and the estimated intercept is aprrox. 0.
 
 (c) Fit a linear regression for the response against the three predictors.  Report the estimated coefficient for $x_2$ and compare the value with the estimated slope from the previous part. What do you notice?
 
+```{r}
+reg_normal <- lm(y ~ x2 + x7 + x8, data = nfl)
+summary(reg_normal)
+```
+
+The coefficient for $x_2$ in the linear regression for the response against the three predictors is the same as the coefficient for $e(x_k|x_1,···, x_{k−1})$ in the partial linear regression.
+
 (d) Before producing the partial regression plots for $x_7$ and $x_8$,  what do you think will be the values of the estimated coefficients for the linear regression for each of these plots?
 
+I think the estimated coefficient of the partial regression for $x_7$ will be 0.194 and for $x_8$ will be -0.005.
+
 (e) Produce the partial regression plots for $x_7$ and $x_8$ Interpret what both of these plots are telling us.
+
+```{r}
+reg_x7 <- lm(x7 ~ x2 + x8, data = nfl)
+reg_y_part7 <- lm(y ~ x2 + x8, data = nfl)
+
+plot(reg_y_part7$residuals, reg_x7$residuals, main = "Partial Regression Plot for x7")
+
+reg_x8 <- lm(x8 ~ x2 + x7, data = nfl)
+reg_y_part8 <- lm(y ~ x2 + x7, data = nfl)
+
+plot(reg_y_part8$residuals, reg_x8$residuals, main = "Partial Regression Plot for x8")
+```
+
+Both of these partial regression plots show an apparent linear relationship between the removed regressor and the response. As expected based on parts (c) & (d), the partial regression plot for $x_7$ has a positive slope while the one for $x_8$ has a negative slope.
 
 #### Question 2
 
 Produce plots of the residuals, studentized residuals, and externally studentized residuals (each against the fitted values for the multiple linear regression). Based on these, do we have any outliers?
 
+```{r}
+student_resids <- rstandard(reg_normal)
+ex_student_resids <- rstudent(reg_normal)
+
+plot(reg_normal$fitted.values, reg_normal$residuals, main = "Residuals vs. Fitted Values")
+plot(reg_normal$fitted.values, student_resids, main = "Studentized Residuals vs. Fitted Values")
+plot(reg_normal$fitted.values, ex_student_resids, main = "Externally Studentized Residuals vs. Fitted Values")
+abline(h = qt(1-0.05/(2*28), 28-4-1), col = 'red')
+abline(h = -qt(1-0.05/(2*28), 28-4-1), col = 'red')
+```
+
+```{r}
+qt(1-0.05/(2*28), 28-4-1)
+```
+
+No externally studentized residuals have magnitude larger than 3.53, so there are no outliers.
+
 #### Question 3
 
 Do we have any high leverage data points for this multiple linear regression?  What teams are these?
+
+```{r}
+levs <- lm.influence(reg_normal)$hat #2p/n = 2*4/28 =  0.286
+levs[levs > 0.286]
+```
+
+Yes, there are two high leverage data points for this MLR, teams 18 and 27.
 
 #### Question 4
 
 Use $DFFITS_i$, $DFBETAS_{j,i}$, and Cook’s distance to check for influential observations. What teams are influential?
 
+```{r}
+reg_dffits <- dffits(reg_normal)
+reg_dffits[abs(reg_dffits) > 2*sqrt(4/28)]
+```
+
+```{r}
+reg_dfbetas <- dfbetas(reg_normal)
+reg_dfbetas[abs(reg_dfbetas) > 2/sqrt(28)]
+```
+
+```{r}
+reg_cooks <- cooks.distance(reg_normal)
+reg_cooks[abs(reg_cooks) > qf(0.5, 4, 24)]
+```
+
+Teams 10 and 21 may be influential based on the DFBETAS, but neither DFFITS nor Cook's distance showed any influential points.
