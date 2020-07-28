@@ -92,4 +92,4 @@ Keeping track of R functions and use cases covered in this course.
 - `dfbetas(lin_mod)` gives the DFBETAS of a given model.
   - Observations are considered influential if the magnitude of their DFBETAS is greater than $\frac{2}{\sqrt{n}}$.
 - `cooks.distance(lin_mod)` gives the Cook's distance for a given model.
-  - Observations are considered influential if their Cook's distance is greater than `qf(0.5, p. n-p)`.
+  - Observations are considered influential if their Cook's distance is greater than `qf(0.5, p, n-p)`.
