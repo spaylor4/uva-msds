@@ -98,7 +98,7 @@ Keeping track of R functions and use cases covered in this course.
 
 - `glm(response ~ predictors, family = "binomial")` fits a logistic regression model. Calling `summary(glm_result)` gives the estimated coefficients and the z scores and p-values for the Wald test for significance of individual predictors.
   - For grouped data, use `glm(proportion ~ predictors, family = "binomial", weights = group_size_colname)`.
-- `1 - pchisq(model$null.deviance - model$deviance, p)` gives $\Delta G^2$ p-value (area to the right under the curve) for whether model as a whole is useful, where $p$ is number of predictor variables. 
+- `1 - pchisq(model$null.deviance - model$deviance, p)` gives $\Delta G^2$ p-value (area to the right under the curve) for whether model as a whole is useful, where $p$ is number of predictor variables (excluding intercept). 
   - Small p-value means you reject null and conclude that at least one parameter's coefficient is non-zero.
 - `1 - pchisq(reduced_model$deviance - full_model$deviance, r)` gives $\Delta G^2$ p-value (area to the right under the curve) for whether additional predictors are useful to the model, where $r$ is number of additional predictor variables in the full compared to the reduced.
   - Small p-value means you reject null hypothesis that all additional predictors have coefficient of zero and conclude that at least one is non-zero. 
