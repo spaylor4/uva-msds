@@ -63,14 +63,29 @@ popul = popul[['CBSA', 'NAME', 'LSAD', 'CENSUS2010POP', 'POPESTIMATE2019']]
 popul = popul.rename(columns = {'CBSA': 'cbsa_code', 'CENSUS2010POP': 'pop_2010', 'POPESTIMATE2019': 'pop_2019'})
 popul.columns = popul.columns.str.lower()
 
+#cbsa not unique (has MSA and counties within MSA)
+popul = popul[popul['lsad'].isin(['Metropolitan Statistical Area', 'Micropolitan Statistical Area'])]
+
+#now is cbsa unique?
+popul.groupby('cbsa_code')['name'].nunique().reset_index().sort_values(by = 'name', ascending = False)
+#yep
+
 ### Joining --------------------------------------------------
 
 sum(msa_lkp['cbsa_code'].isin(popul['CBSA'])) #how many MSAs have population data?
 sum(airfares['airport_code'].isin(msa_lkp['airport_code']))
 airfares['airport_code'].nunique()
 
+#for population exploration, only want Q1 2010 & 2019 data
 
-pd.merge(msa_lkp, popul, how = 'left', on = 'cbsa_code').info() #some MSAs are in the pop data multiple times
+air_pop = airfares[(airfares['year'].isin([2010, 2019])) & (airfares['quarter'] == 1)].pivot_table(index = ['airport_code', 'city_name', 'state_name'], 
+                                                                                                   columns = 'year', values = ['avg_fare', 'avg_fare_adj'])
+air_pop.columns = ['{}_{}'.format(i, j) for i, j in air_pop.columns]
+air_pop = air_pop.reset_index()
+
+air_pop = pd.merge(air_pop, msa_lkp, how = 'left', on = 'airport_code')
+
+air_pop = pd.merge(air_pop, popul, how = 'left', on = 'cbsa_code') #some MSAs are in the pop data multiple times
 
 
 ### Time Series Plot -----------------------------------------
@@ -90,7 +105,7 @@ plot(fig)
 #go plot with selected airports
 #https://towardsdatascience.com/getting-started-with-plot-ly-3c73706a837c
 
-airports = ["LAX", "ORD", "DEN", "ALT", "BOS"]
+airports = ["LAX", "ORD", "DEN", "ATL", "BOS"]
 colors = dict(zip(airports, sns.color_palette("GnBu_d", len(airports)).as_hex()))
 
 trace_list = []
@@ -123,8 +138,8 @@ fig = go.Figure(data=trace_list, layout=layout)
 
 plot(fig)
 
-
 #add figure widget functionality
+
 
 
 
