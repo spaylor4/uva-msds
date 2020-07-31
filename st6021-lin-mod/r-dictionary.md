@@ -93,3 +93,17 @@ Keeping track of R functions and use cases covered in this course.
   - Observations are considered influential if the magnitude of their DFBETAS is greater than $\frac{2}{\sqrt{n}}$.
 - `cooks.distance(lin_mod)` gives the Cook's distance for a given model.
   - Observations are considered influential if their Cook's distance is greater than `qf(0.5, p, n-p)`.
+
+#### Module 9: Logistic Regression
+
+- `glm(response ~ predictors, family = "binomial")` fits a logistic regression model. Calling `summary(glm_result)` gives the estimated coefficients and the z scores and p-values for the Wald test for significance of individual predictors.
+  - For grouped data, use `glm(proportion ~ predictors, family = "binomial", weights = group_size_colname)`.
+- `1 - pchisq(model$null.deviance - model$deviance, p)` gives $\Delta G^2$ p-value (area to the right under the curve) for whether model as a whole is useful, where $p$ is number of predictor variables. 
+  - Small p-value means you reject null and conclude that at least one parameter's coefficient is non-zero.
+- `1 - pchisq(reduced_model$deviance - full_model$deviance, r)` gives $\Delta G^2$ p-value (area to the right under the curve) for whether additional predictors are useful to the model, where $r$ is number of additional predictor variables in the full compared to the reduced.
+  - Small p-value means you reject null hypothesis that all additional predictors have coefficient of zero and conclude that at least one is non-zero. 
+- To perform a Pearson chi-square goodness of fit test (can only be done on grouped data), need to calculate the Pearson residuals using `residuals(logistic_mod, type = "pearson")`, then calculate the test statistic using `sum(pearson_resids^2)`. The p-value can then be found using `1 - pchisq(test_stat, n - p)`, where $n$ is number of groups and $p$ is number of parameters (including intercept).
+  - Null hypothesis states that data fits the model well, so small p-value means data does not fit the model well.
+- `1 - pchisq(logistic_mod$deviance, n - p)` gives p-value for deviance goodness of fit test (can only be used with grouped data), where $n$ is number of groups and $p$ is number of parameters (including intercept).
+  - Null hypothesis states that data fits the model well, so small p-value means data does not fit the model well.
+  - Deviance and Pearson goodness of fit tests are asymptotically similar, so with large samples they will produce nearly identical results.
