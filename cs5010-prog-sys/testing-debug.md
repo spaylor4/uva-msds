@@ -35,4 +35,5 @@
   - Import the method you are testing from its script.
   - Create a class that inherits from unittest.TestCase.
   - Create a function named "test_[descrip_of_test]" and write code within it as you would normally use the method in question. Then use assert statements to check that the expected value and actual value are the same.
+  - Each test function can have multiple assert statements if you want to check side effects of an action.
 - Don't write unit tests that you expect to fail. Instead use `assertFalse` or another appropriate assert statement. 
