@@ -22,6 +22,11 @@ import pandas as pd
 import numpy as np
 import datetime as dt
 
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.offline import plot
+import seaborn as sns
+
 ### Read in Data -----------------------------------------------
 
 airfares = pd.read_csv("airfares_final.csv")
@@ -87,13 +92,25 @@ air_pop = pd.merge(air_pop, msa_lkp, how = 'left', on = 'airport_code')
 
 air_pop = pd.merge(air_pop, popul, how = 'left', on = 'cbsa_code') #some MSAs are in the pop data multiple times
 
+air_pop = air_pop.dropna()
+
+### Compare Population & Price -------------------------------
+
+#simple scatter plot
+fig = px.scatter(data_frame = air_pop, x = "pop_2019", y = "avg_fare_2019")
+plot(fig)
+
+#scatter with log axes
+fig = go.Figure()
+fig.add_trace(go.Scatter(x = air_pop["pop_2019"], y = air_pop["avg_fare_2019"], mode = 'markers'))
+fig.update_layout(xaxis_type="log", yaxis_type="log")
+plot(fig)
+
+#calculate simple correlation
+air_pop["pop_2019"].corr(air_pop['avg_fare_2019'])
+
 
 ### Time Series Plot -----------------------------------------
-
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.offline import plot
-import seaborn as sns
 
 #basic plot with all airports (messy)
 fig = px.line(airfares, x = 'date', y = 'avg_fare', color = 'airport_code',
