@@ -96,7 +96,7 @@ Keeping track of R functions and use cases covered in this course.
 
 #### Module 9: Logistic Regression
 
-- `glm(response ~ predictors, family = "binomial")` fits a logistic regression model. Calling `summary(glm_result)` gives the estimated coefficients and the z scores and p-values for the Wald test for significance of individual predictors.
+- `glm(response ~ predictors, family = "binomial", data = df)` fits a logistic regression model. Calling `summary(glm_result)` gives the estimated coefficients and the z scores and p-values for the Wald test for significance of individual predictors.
   - For grouped data, use `glm(proportion ~ predictors, family = "binomial", weights = group_size_colname)`.
 - `1 - pchisq(model$null.deviance - model$deviance, p)` gives $\Delta G^2$ p-value (area to the right under the curve) for whether model as a whole is useful, where $p$ is number of predictor variables (excluding intercept). 
   - Small p-value means you reject null and conclude that at least one parameter's coefficient is non-zero.
@@ -107,3 +107,38 @@ Keeping track of R functions and use cases covered in this course.
 - `1 - pchisq(logistic_mod$deviance, n - p)` gives p-value for deviance goodness of fit test (can only be used with grouped data), where $n$ is number of groups and $p$ is number of parameters (including intercept).
   - Null hypothesis states that data fits the model well, so small p-value means data does not fit the model well.
   - Deviance and Pearson goodness of fit tests are asymptotically similar, so with large samples they will produce nearly identical results.
+
+#### Module 10: Logistic Regression - Validation, Multinomial Logistic Regression, & GLMs
+
+- To split data into training and test sets, can use `sample.int(nrow(data), floor(proportion*nrow(data)), replace = F)` to get random row numbers, then `data[sample_rows, ]` and `data[-sample_rows, ]` to get the two data frames, where `sample_rows` is the result of the `sample.int` call. 
+
+  - A proportion of 0.5 gives equal-sized training and test sets.
+  - `replace = F` prevents repeating of numbers in sample.
+  - Can optionally use `set.seed(seed)`, where seed is an integer, before sampling to make results reproducible.
+
+- `predict(logistic_model, newdata = test_data, type = "response")` gives the predicted probabilities for a given test data set and logistic model.
+
+  - Using the same function call without `type = "response"` gives the predicted log-odds rather than the predicted probabilities.
+
+- To plot ROC curve for logistic regression, need to first generate a prediction object using `prediction(preds, test_data$true_values)`, where `preds` is the result of `predict(logistic_model, newdata = test_data, type = "response")`. Then get ROC values using `performance(rates, measure="tpr", x.measure="fpr")`, where `rates` is the result of `prediction()`. Then can plot curve with `plot(roc_values)`. Full flow as follows:
+
+  ```R
+  preds <- predict(logistic_model, newdata = test_data, type = "response")
+  rates <- prediction(preds, test_data$true_values)
+  roc_result<-performance(rates, measure="tpr", x.measure="fpr")
+  plot(roc_result) #roc curve
+  lines(x = c(0,1), y = c(0,1), col="red") #diagonal line
+  ```
+  - Requires `library(ROCR)`.
+
+- To calculate AUC, can use `performance(prediction_result, measure = "auc")`, where `prediction_result` is returned from `prediction(preds, test_data$true_values)` and `preds` is returned from `predict(logistic_model, newdata = test_data, type = "response")`.
+
+  - Requires `library(ROCR)`.
+
+- `table(test_data$true_values, preds>cutoff)` generates a confusion matrix, where `preds` is the result of `predict(logistic_model, newdata = test_data, type = "response")` and `cutoff` is the cutoff for the prediction decision rule between 0 and 1.
+
+- `multinom(response ~ predictors)` fits a multinomial logistic regression model (categorical response with multiple possible outcomes). As with `lm` and `glm` functions, we can call `summary(model)` to see the results, in this case regression coefficients, standard errors, residual deviance, and AIC.
+
+  - Unlike `lm` and `glm`, this summary does not include test statistics and p-values.
+  - Can calculate z scores for coefficients using `summary(model_result)$coefficients/summary(model_result)$standard.errors`.
+  - Can calculate p-values for coefficients using `(1 - pnorm(abs(z_scores)))*2`.
