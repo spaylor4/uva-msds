@@ -48,6 +48,15 @@ airfares[['avg_fare', 'avg_fare_adjusted']] = airfares[['avg_fare', 'avg_fare_ad
 airfares['quarter_month'] = np.select([airfares['quarter'] == 1, airfares['quarter'] == 2, airfares['quarter'] == 3, airfares['quarter'] == 4], choicelist = [1, 4, 7, 10])
 airfares['date'] = airfares.apply(lambda row: dt.date(row['year'], row['quarter_month'], 1), axis=1)
 
+def date_from_quarter(df, quarter_col = "quarter", year_col = "year"):
+    #take a df with quarter & year columns (names of columns are inputs)
+    #return a date column with date equal to first day of quarter
+    df['quarter_month'] = np.select([df[quarter_col] == 1, df[quarter_col] == 2, df[quarter_col] == 3, df[quarter_col] == 4], choicelist = [1, 4, 7, 10])
+    date_col = df.apply(lambda row: dt.date(row[year_col], row['quarter_month'], 1), axis=1)
+
+    return date_col
+    
+
 ##msa_lkp data
 msa_lkp.drop("Unnamed: 10", axis = 1, inplace = True)
 
