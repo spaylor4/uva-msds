@@ -137,8 +137,8 @@ Keeping track of R functions and use cases covered in this course.
 
 - `table(test_data$true_values, preds>cutoff)` generates a confusion matrix, where `preds` is the result of `predict(logistic_model, newdata = test_data, type = "response")` and `cutoff` is the cutoff for the prediction decision rule between 0 and 1.
 
-- `multinom(response ~ predictors)` fits a multinomial logistic regression model (categorical response with multiple possible outcomes). As with `lm` and `glm` functions, we can call `summary(model)` to see the results, in this case regression coefficients, standard errors, residual deviance, and AIC.
+- `multinom(response ~ predictors)` fits a multinomial logistic regression model (categorical response with multiple possible outcomes). Need `library(nnet)` to use this function.
 
-  - Unlike `lm` and `glm`, this summary does not include test statistics and p-values.
+  - As with `lm` and `glm` functions, we can call `summary(model)` to see the results, in this case regression coefficients, standard errors, residual deviance, and AIC. Unlike `lm` and `glm`, this summary does not include test statistics and p-values.
   - Can calculate z scores for coefficients using `summary(model_result)$coefficients/summary(model_result)$standard.errors`.
   - Can calculate p-values for coefficients using `(1 - pnorm(abs(z_scores)))*2`.
