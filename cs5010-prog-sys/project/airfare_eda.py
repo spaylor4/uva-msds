@@ -39,10 +39,10 @@ popul = pd.read_csv("cbsa_pop_est2019.csv", encoding = 'latin1')
 ### Cleaning ---------------------------------------------------
 
 ## airfares data
-airfares = airfares.rename(columns = {'average_fair': 'avg_fare', 'average_fair_adjusted': 'avg_fare_adj'}) #personal preference
+airfares = airfares.rename(columns = {'average_fair': 'avg_fare', 'average_fair_adjusted': 'avg_fare_adjusted'}) #personal preference
 
 #convert fares to numeric
-airfares[['avg_fare', 'avg_fare_adj']] = airfares[['avg_fare', 'avg_fare_adj']].apply(lambda x: x.str.replace(',', '').astype(float))
+airfares[['avg_fare', 'avg_fare_adjusted']] = airfares[['avg_fare', 'avg_fare_adjusted']].apply(lambda x: x.str.replace(',', '').astype(float))
 
 #add date column (first day of quarter) for use in plot
 airfares['quarter_month'] = np.select([airfares['quarter'] == 1, airfares['quarter'] == 2, airfares['quarter'] == 3, airfares['quarter'] == 4], choicelist = [1, 4, 7, 10])
@@ -84,7 +84,7 @@ airfares['airport_code'].nunique()
 #for population exploration, only want Q1 2010 & 2019 data
 
 air_pop = airfares[(airfares['year'].isin([2010, 2019])) & (airfares['quarter'] == 1)].pivot_table(index = ['airport_code', 'city_name', 'state_name'], 
-                                                                                                   columns = 'year', values = ['avg_fare', 'avg_fare_adj'])
+                                                                                                   columns = 'year', values = ['avg_fare', 'avg_fare_adjusted'])
 air_pop.columns = ['{}_{}'.format(i, j) for i, j in air_pop.columns]
 air_pop = air_pop.reset_index()
 
@@ -96,27 +96,44 @@ air_pop = air_pop.dropna()
 
 ### Compare Population & Price -------------------------------
 
-#simple scatter plot
-fig = px.scatter(data_frame = air_pop, x = "pop_2019", y = "avg_fare_2019")
-plot(fig)
+# #simple scatter plot
+# fig = px.scatter(data_frame = air_pop, x = "pop_2019", y = "avg_fare_2019")
+# plot(fig)
 
 #scatter with log axes
 fig = go.Figure()
 fig.add_trace(go.Scatter(x = air_pop["pop_2019"], y = air_pop["avg_fare_2019"], mode = 'markers'))
+fig.update_layout(title = "Average Airfare vs. Population, 2019", 
+                  xaxis_title = "Population, Local MSA", yaxis_title = "Average Q1 Airfare")
+
 fig.update_layout(xaxis_type="log", yaxis_type="log")
+
 plot(fig)
 
 #calculate simple correlation
 air_pop["pop_2019"].corr(air_pop['avg_fare_2019'])
 
+#what about passenger rank vs. fare?
+ranked = airfares[(airfares['year']==2019) & (airfares['quarter'] == 1)]
+
+ranked['passenger_rank'].corr(ranked['avg_fare'])
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(x = ranked["passenger_rank"], y = ranked["avg_fare"], mode = 'markers'))
+fig.update_layout(title = "Average Airfare vs. Passenger Rank, 2019", 
+                  xaxis_title = "Passenger Rank", yaxis_title = "Average Q1 Airfare")
+fig.update_xaxes(range = [max(ranked['passenger_rank']), 1])
+
+fig.show()
+
 
 ### Time Series Plot -----------------------------------------
 
 #basic plot with all airports (messy)
-fig = px.line(airfares, x = 'date', y = 'avg_fare', color = 'airport_code',
-              color_discrete_sequence = pd.Series(np.repeat('darkgray', airfares.shape[0])))
+# fig = px.line(airfares, x = 'date', y = 'avg_fare', color = 'airport_code',
+#               color_discrete_sequence = pd.Series(np.repeat('darkgray', airfares.shape[0])))
 
-plot(fig)
+# plot(fig)
 
 
 #go plot with selected airports
@@ -128,7 +145,7 @@ colors = dict(zip(airports, sns.color_palette("GnBu_d", len(airports)).as_hex())
 trace_list = []
 for airport in airports:
     trace = go.Scatter(
-        y = airfares[airfares['airport_code']==airport]['avg_fare_adj'].tolist(),
+        y = airfares[airfares['airport_code']==airport]['avg_fare_adjusted'].tolist(),
         x = airfares[airfares['airport_code']==airport]['date'].tolist(),
         mode = 'lines',
         name = airport,
