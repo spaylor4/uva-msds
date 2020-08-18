@@ -7,13 +7,18 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ROCR)
+
+wcgs <- read_csv("wcgs.csv")
 ```
 
 ## Question 1
 
-For  this  question,  we  will  continue  using  the  Western  Collaborative  Group  Study (WCGS) data set, which is from a study regarding heart disease.  Data are collected from 3154 middle-aged males in California.  Download the file “wcsg.csv” and load it into R. In the previous guided question set, we focused on predicting the likelihood of getting a heart attack based on the following predictors:
+For  this  question,  we  will  continue  using  the  Western Collaborative Group Study (WCGS) data set, which is from a study regarding heart disease.  Data are collected from 3154 middle-aged males in California.  Download the file “wcgs.csv” and load it into R. In the previous guided question set, we focused on predicting the likelihood of getting a heart attack based on the following predictors:
 
-*age.  Age in years
+* age.  Age in years
 
 * sbp.  Systolic blood pressure in mm Hg
 
@@ -25,28 +30,63 @@ The response variable is chd69,  with a ‘1’ indicating the person developed 
 
 #### (a)
 
-Refer to your answer from the previous guided question set, which predictors didyou use to fit a logistic regression model?
+Refer to your answer from the previous guided question set, which predictors did you use to fit a logistic regression model?
+
+In the previous guided question set, I decided to use age, sbp, and ncigs to fit a logistic regression model, as dbp was not a significant predictor but both sbp and dbp could not be simultaneously dropped.
 
 #### (b)
 
-Validate your logistic regression model using an ROC curve.  Randomly split your data  set  into  a  testing  and  training  data  set,  of  equal  size.   For  consistency  of results among all groups, use set.seed(199).  What does your ROC curve tell you?
+Validate your logistic regression model using an ROC curve. Randomly split your data set into a testing  and  training data set, of equal size. For consistency of results among all groups, use `set.seed(199)`. What does your ROC curve tell you?
+
+```{r train_glm}
+set.seed(199)
+sample_rows <- sample.int(nrow(wcgs), floor(0.5*nrow(wcgs)), replace = F)
+
+wcgs_train <- wcgs[sample_rows, ]
+wcgs_test <- wcgs[-sample_rows, ]
+
+glm_result <- glm(chd69 ~ age + sbp + ncigs, data = wcgs_train, family = "binomial")
+
+preds <- predict(glm_result, newdata = wcgs_test, type = "response")
+
+rates <- prediction(preds, wcgs_test$chd69)
+roc_result<-performance(rates, measure="tpr", x.measure="fpr")
+plot(roc_result)
+lines(x = c(0,1), y = c(0,1), col="red")
+```
+
+This ROC curve tells us that the model is better than random guessing, as the curve is above the diagonal.
 
 #### (c)
 
 Find the AUC associated with your ROC curve.  What does your AUC tell you?
 
+```{r auc}
+auc <- performance(rates, measure = "auc")
+auc@y.values[[1]]
+```
+
+This AUC value tells us that that the model performs reasonably well in predicting the test data response.
+
 #### (d)
 
 Create a confusion matrix using a cutoff of 0.5.  Create another confusion matrix using a cutoff of 0.1.  Are these values surprising?  What do you think is going on here?
 
+```{r confusion}
+table(wcgs_test$chd69, preds > 0.5)
+
+table(wcgs_test$chd69, preds > 0.1)
+```
+
+In the first confusion matrix, the model predictions are all negative (no heart disease), while in the second there are some predicted positives and some predicted negatives. In this case, our response (developing heart disease) is relatively rare, so our predicted probabilities are low, and a threshold of 0.5 assumes either outcome is equally likely.
 
 ## Question 2
 
-For this question, we will use a data set containing information regarding housing in Boston.   The  data  set,  Boston,  comes  from  the  MASS  package  in  R.  We  will  focus on predicting whether a tract in Boston can be classified as a low-, medium-, or high-crime area, based on two predictors, the weighted distance of the tract from five Boston employment centers, and the student-teacher ratio in the tract.
+For this question, we will use a data set containing information regarding housing in Boston. The data  set,  Boston,  comes  from  the  MASS  package  in  R. We  will focus on predicting whether a tract in Boston can be classified as a low-, medium-, or high-crime area, based on two predictors, the weighted distance of the tract from five Boston employment centers, and the student-teacher ratio in the tract.
 
 #### (a)
 
-The variable crim is the per capita crime rate of the town that the tract is in. Create a new variable that categorizes crim in the following manner.  Define a tract to have a
+The variable crim is the per capita crime rate of the town that the tract is in. Create a new variable that categorizes crim in the following manner. Define a tract to have a
 
 * low crime rate, if its crime rate is less than the median crime rate for this data set
 
@@ -54,16 +94,41 @@ The variable crim is the per capita crime rate of the town that the tract is in.
 
 * high crime rate, if its crime rate is higher than the 75th percentile of the crime rate for this data set
 
+```{r crime_categories}
+library(MASS)
+
+boston <- Boston
+
+boston$crim_cat <- if_else(boston$crim < median(boston$crim), "low",
+        if_else(boston$crim < quantile(boston$crim, 0.75), "medium", "high"))
+```
+
 #### (b)
 
 Fit a multinomial logistic regression model to predict whether a tract is a low-, medium-, or high-crime area using the variables dis and ptratio, the weighted distance of the tract from five Boston employment centers and the student-teacher ratio in the tract, respectively.
+
+```{r fit_multinomial}
+library(nnet)
+
+boston_result <- multinom(crim_cat ~ dis + ptratio, data = boston)
+
+summary(boston_result)
+```
+
 
 #### (c)
 
 Compute the Wald statistics and p-values associated with the regression coefficients.
 
+```{r compute_wald}
+z_scores <- summary(boston_result)$coefficients/summary(boston_result)$standard.errors
+z_scores
+
+(1 - pnorm(abs(z_scores)))*2
+```
+
 #### (d)
 
 Interpret  the  results  of  the  Wald  statistics  associated  with  the  two  predictors contextually.
 
-
+The p-values for each regression coefficient is low for both levels of the response, so we conclude that both dis and ptratio are significant in predicting the likelihood of a tract being categorized as low, medium, or high-crime.
