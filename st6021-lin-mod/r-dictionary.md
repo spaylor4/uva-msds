@@ -2,6 +2,8 @@
 
 Keeping track of R functions and use cases covered in this course.
 
+Use `knitr::purl("filename.Rmd")` to create a .R file with all code chunks from a .Rmd file.
+
 #### Module 0: Review of Statistical Inference
 
 - `pnorm(z)` returns the percentile associated with a particular z-score z from a normal distribution. This percentile equals the area under the curve to the left of z.
@@ -72,6 +74,7 @@ Keeping track of R functions and use cases covered in this course.
   This creates a data frame showing the predictors considered, number of predictors $p$, $R^2$, $R^2_{adj}$, $SS_{Res}$, Mallows $C_p$, and BIC.
 
   - The `regsubsets` function does not check if the regression assumptions are met and does not guarantee that the best model will be identified.
+  - In general, larger $R^2$ and $R^2_{adj$}$ are desired, while lower $MS_{Res}$, Mallow's $C_p$, and BIC are desired.
 
 - Can perform forward selection, backward elimination, and stepwise regression using `step(start_model, scope = list(lower = smallest_model, upper = largest_model), direction)`, where direction is "forward", "backward", or "both" and smallest_model and largest_model are the bounds of models under consideration, often an intercept-only model for the smallest and a model with all predictors for the largest. Steps are chosen based on which variables have the lowest AIC (textbook uses F statistic).
 
@@ -129,6 +132,7 @@ Keeping track of R functions and use cases covered in this course.
   plot(roc_result) #roc curve
   lines(x = c(0,1), y = c(0,1), col="red") #diagonal line
   ```
+
   - Requires `library(ROCR)`.
 
 - To calculate AUC, can use `performance(prediction_result, measure = "auc")`, where `prediction_result` is returned from `prediction(preds, test_data$true_values)` and `preds` is returned from `predict(logistic_model, newdata = test_data, type = "response")`.
@@ -142,3 +146,5 @@ Keeping track of R functions and use cases covered in this course.
   - As with `lm` and `glm` functions, we can call `summary(model)` to see the results, in this case regression coefficients, standard errors, residual deviance, and AIC. Unlike `lm` and `glm`, this summary does not include test statistics and p-values.
   - Can calculate z scores for coefficients using `summary(model_result)$coefficients/summary(model_result)$standard.errors`.
   - Can calculate p-values for coefficients using `(1 - pnorm(abs(z_scores)))*2`.
+
+- Note on `set.seed()`: old versions of R used a "Rounding" sampler, while newer use a "Rejection" sampler. Even after updating R, some people need to run `RNGkind(sample.kind = "Rejection")` to use the new method. If ever trying to replicate results produced using old method, can run `RNGkind(sample.kind = "Rounding")` before calling `set.seed()`.
