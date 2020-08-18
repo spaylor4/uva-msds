@@ -115,7 +115,7 @@ fig.add_trace(go.Scatter(x = air_pop["pop_2019"], y = air_pop["avg_fare_2019"], 
 fig.update_layout(title = "Average Airfare vs. Population, 2019", 
                   xaxis_title = "Population, Local MSA", yaxis_title = "Average Q1 Airfare")
 
-fig.update_layout(xaxis_type="log", yaxis_type="log")
+# fig.update_layout(xaxis_type="log", yaxis_type="log")
 
 plot(fig)
 
@@ -133,7 +133,36 @@ fig.update_layout(title = "Average Airfare vs. Passenger Rank, 2019",
                   xaxis_title = "Passenger Rank", yaxis_title = "Average Q1 Airfare")
 fig.update_xaxes(range = [max(ranked['passenger_rank']), 1])
 
-fig.show()
+plot(fig)
+
+
+### Animate Transition from Regular to Log Axis --------------
+
+fig = go.Figure(data = [go.Scatter(x = air_pop["pop_2019"], y = air_pop["avg_fare_2019"], mode = 'markers')], 
+                layout = go.Layout(title="Start Title", 
+                                   updatemenus=[dict(
+                                        type="buttons",
+                                        buttons=[dict(label="Play",
+                                                      method="animate",
+                                                      args=[None])])] ), 
+                frames = [go.Frame(data = [go.Scatter(x = air_pop["pop_2019"], y = air_pop["avg_fare_2019"], mode = 'markers')], 
+                                   layout=go.Layout(xaxis_type="linear", yaxis_type="linear")), 
+                          go.Frame(data = [go.Scatter(x = air_pop["pop_2019"], y = air_pop["avg_fare_2019"], mode = 'markers')], 
+                                   layout=go.Layout(xaxis = dict(type = 'log', range = [np.log10(10000), np.log10(20000000)]), 
+                                                    yaxis = dict(type = 'log', range = [2, np.log10(1000)]))
+                    )]
+                )
+
+# fig.update_layout(title = "Average Airfare vs. Passenger Rank, 2019", 
+#                   xaxis_title = "Passenger Rank", yaxis_title = "Average Q1 Airfare")
+# fig.update_xaxes(range = [max(ranked['passenger_rank']), 1])
+fig.update_layout(transition_duration=3000)
+
+plot(fig)
+
+
+####
+
 
 
 ### Time Series Plot -----------------------------------------
@@ -148,7 +177,7 @@ fig.show()
 #go plot with selected airports
 #https://towardsdatascience.com/getting-started-with-plot-ly-3c73706a837c
 
-airports = ["LAX", "ORD", "DEN", "ATL", "BOS"]
+airports = ["LAX", "ORD", "DEN", "IAD", "BOS"]
 colors = dict(zip(airports, sns.color_palette("GnBu_d", len(airports)).as_hex()))
 
 trace_list = []
@@ -162,7 +191,8 @@ for airport in airports:
                     color = colors[airport],
                     width = 1.5
 #                    dash = 'dot'
-                    )
+                    ), 
+        hovertemplate = '<br>%{x}<br>' + 'Price: $%{y:.2f}'
         )
     trace_list.append(trace)
 
@@ -181,8 +211,38 @@ fig = go.Figure(data=trace_list, layout=layout)
 
 plot(fig)
 
-#add figure widget functionality
+### Prediction Plots -------------------------------------------
+from plotly.subplots import make_subplots
 
+time_series_plot_df = pd.read_csv()
 
+time_series_plot_df[['Year', 'Qtr']] = time_series_plot_df['Quarter'].str.split("_", expand = True)
+time_series_plot_df['Date'] = date_from_quarter(time_series_plot_df, quarter_col="Qtr", year_col="Year")
 
+fig = make_subplots(rows = 5, cols = 1)
+
+fig.append_trace(go.Scatter(
+    x=time_series_plot_df[(time_series_plot_df['Airport']=='LAX') & (time_series_plot_df['RealOrPrediction']=='Actual')]['Date'].tolist(),
+    y=time_series_plot_df[(time_series_plot_df['Airport']=='LAX') & time_series_plot_df['RealOrPrediction']=='Actual']['Price'].tolist(),
+    mode='lines',
+    line = dict(
+                    width = 1.5
+                    )
+), row=1, col=1)
+
+fig.update_yaxes(title_text="Fare", range=[0, 475])
+fig.update_xaxes(title_text="Quarter", range=[dt.date(2019, 1, 1), dt.date(2019, 12, 1)])
+
+fig.update_layout(title_text="Actual vs. Predicted Fares, 2019", height=700)
+
+# row_num = 1
+# for airport in airport_code_list:
+#   fig.append_trace(go.Scatter(
+#       x=[3, 4, 5],
+#       y=[1000, 1100, 1200],
+#   ), row=1, col=1)
+
+#   row_num += 1
+
+fig.show()
 
