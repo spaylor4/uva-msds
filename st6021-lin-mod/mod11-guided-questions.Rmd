@@ -1,0 +1,61 @@
+---
+title: "Module 11 Guided Questions"
+author: "Shannon Paylor"
+date: "8/4/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Question Set Overview
+
+For this guided question set, we will use the “nfl.txt” data set that we used in module 7. As a reminder, the data are on NFL team performance from the 1976 season.  The variables are:
+
+* y:  Games won (14-game season)
+
+* x1:  Rushing yards (season)
+
+* x2:  Passing yards (season)
+
+* x3:  Punting average (yards/punt)
+
+* x4:  Field goal percentage (FGs made/FGs attempted)
+
+* x5:  Turnover differential (turnovers acquired - turnovers lost)
+
+* x6:  Penalty yards (season)
+
+* x7:  Percent rushing (rushing plays/total plays)
+
+* x8:  Opponents’ rushing yards (season)
+
+* x9:  Opponents’ passing yards (season)
+
+We will use the predictors x2, x7,and x8, which we found to have the lowest BIC from module 7.  For this guided question set, your group is to write your own code to carry out Leave-One-Out Cross-Validation and to provide an estimate for the test MSE for this model. Be sure to submit your R script containing the code (comments should be added in the code when appropriate), as well as the estimated test MSE for this model for HW 11. While there exist functions to carry out LOOCV, you are tasked to write your own code for this activity.  Writing your code is a good way to test if you really understand all the steps in the process involved with a statistical method or algorithm.  You can then compare your code with existing functions to verify if you wrote your code correctly.The cv.glm() function from the boot library can carry out cross-validation. For example, 
+
+```{r}
+library(boot)
+
+glm.fit<-glm(y~x2+x7+x8, data=nfl)
+cv.err<-cv.glm(nfl, glm.fit)
+cv.err$delta[1] ##the output for the LOOCV should match your own 
+cv.glm(nfl,glm.fit, K=10)$delta[1] ##k fold CV with k=10
+```
+
+```{r}
+nfl <- read_tsv("nfl.txt")
+
+nfl.fit<-glm(y~x2+x7+x8, data=nfl)
+
+loocv_ols <- function(model) {
+  obs_terms <- (model$y - model$fitted.values)/(1 - lm.influence(model)$hat)
+  cv_n <- sum(obs_terms ^ 2)/length(model$y)
+  return(cv_n)
+}
+
+loocv_ols(nfl.fit)
+```
+
