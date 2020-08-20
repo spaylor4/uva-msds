@@ -185,5 +185,27 @@ Use `knitr::purl("filename.Rmd")` to create a .R file with all code chunks from 
   legend("bottomright", lwd = 1, col = 1:6, legend = colnames(x), cex = .7)
   ```
 
-  
+- `prcomp(data, scale = True)` used to perform Principal Components Analysis on data.
+
+  - `scale = True` indicates that the variables should be scaled to have unit variance. This is particularly important when the variables have different scales.
+  - Note that `data` should not include any categorical variables.
+
+- For a `prcomp()` result stored in an object `pr_out`, `pr_out$rotation` gives the loading vector for each of the principal components.
+
+- To calculate proportion of variance explained (PVE) of a `prcomp` result `pr_out`, first calculate the variance with `pr_var <- pr_out$sdev^2`, then PVE = `pr_var/sum(pr_var)`.
+
+  - For calculated PVE stored in an object called `pve`, you can create a scree plot to show the PVE for each principal component using: 
+
+    ```R
+    plot(pve, ylim=c(0,1)) #dots
+    plot(pve, xlab = "Principal Component", ylab="Proportion of Variance Explained", main="Scree Plot", ylim=c(0,1),type='b') #add lines and labels
+    ```
+
+  - Can also create a plot of cumulative probability for each additional PC using:
+
+    ```R
+    plot(cumsum(pve), xlab="Principal Component", ylab="Cumulative Proportion of Variance Explained", main="Cumulative Proportion", ylim=c(0,1),type='b')
+    ```
+
+- `biplot(pr_out, scale=0)` produces a biplot of the first two principal components. This can be useful for interpretation, showing which observations are above and below average in those PCs.
 
