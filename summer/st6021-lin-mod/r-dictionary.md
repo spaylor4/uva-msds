@@ -101,10 +101,10 @@ Use `knitr::purl("filename.Rmd")` to create a .R file with all code chunks from 
 
 - `glm(response ~ predictors, family = "binomial", data = df)` fits a logistic regression model. Calling `summary(glm_result)` gives the estimated coefficients and the z scores and p-values for the Wald test for significance of individual predictors.
   - For grouped data, use `glm(proportion ~ predictors, family = "binomial", weights = group_size_colname)`.
-- `1 - pchisq(model$null.deviance - model$deviance, p)` gives $\Delta G^2$ p-value (area to the right under the curve) for whether model as a whole is useful, where $p$ is number of predictor variables (excluding intercept). 
+- `1 - pchisq(model$null.deviance - model$deviance, p)` gives $\Delta G^2$ p-value (area to the right under the curve) for whether logistic regression model as a whole is useful, where $p$ is number of predictor variables (excluding intercept). 
   - Small p-value means you reject null and conclude that at least one parameter's coefficient is non-zero.
 - `1 - pchisq(reduced_model$deviance - full_model$deviance, r)` gives $\Delta G^2$ p-value (area to the right under the curve) for whether additional predictors are useful to the model, where $r$ is number of additional predictor variables in the full compared to the reduced.
-  - Small p-value means you reject null hypothesis that all additional predictors have coefficient of zero and conclude that at least one is non-zero. 
+  - Small p-value means you reject null hypothesis that all additional predictors have coefficient of zero and conclude that at least one is non-zero (can't simultaneously drop all predictors). Large p-value means you fail to reject the null hypothesis that all additional predictors in the full model compared to the reduced are zero (can simultaneously drop all predictors and use the reduced model).
 - To perform a Pearson chi-square goodness of fit test (can only be done on grouped data), need to calculate the Pearson residuals using `residuals(logistic_mod, type = "pearson")`, then calculate the test statistic using `sum(pearson_resids^2)`. The p-value can then be found using `1 - pchisq(test_stat, n - p)`, where $n$ is number of groups and $p$ is number of parameters (including intercept).
   - Null hypothesis states that data fits the model well, so small p-value means data does not fit the model well.
 - `1 - pchisq(logistic_mod$deviance, n - p)` gives p-value for deviance goodness of fit test (can only be used with grouped data), where $n$ is number of groups and $p$ is number of parameters (including intercept).
@@ -116,8 +116,12 @@ Use `knitr::purl("filename.Rmd")` to create a .R file with all code chunks from 
 - To split data into training and test sets, can use `sample.int(nrow(data), floor(proportion*nrow(data)), replace = F)` to get random row numbers, then `data[sample_rows, ]` and `data[-sample_rows, ]` to get the two data frames, where `sample_rows` is the result of the `sample.int` call. 
 
   - A proportion of 0.5 gives equal-sized training and test sets.
+
   - `replace = F` prevents repeating of numbers in sample.
-  - Can optionally use `set.seed(seed)`, where seed is an integer, before sampling to make results reproducible.
+
+  - Can optionally use `set.seed(seed)`, where seed is an integer, before sampling to make results reproducible. 
+
+    Note on `set.seed()`: old versions of R used a "Rounding" sampler, while newer use a "Rejection" sampler. Even after updating R, some people need to run `RNGkind(sample.kind = "Rejection")` to use the new method. If ever trying to replicate results produced using old method, can run `RNGkind(sample.kind = "Rounding")` before calling `set.seed()`.
 
 - `predict(logistic_model, newdata = test_data, type = "response")` gives the predicted probabilities for a given test data set and logistic model.
 
@@ -139,7 +143,7 @@ Use `knitr::purl("filename.Rmd")` to create a .R file with all code chunks from 
 
   - Requires `library(ROCR)`.
 
-- `table(test_data$true_values, preds>cutoff)` generates a confusion matrix, where `preds` is the result of `predict(logistic_model, newdata = test_data, type = "response")` and `cutoff` is the cutoff for the prediction decision rule between 0 and 1.
+- `table(test_data$true_values, preds > cutoff)` generates a confusion matrix, where `preds` is the result of `predict(logistic_model, newdata = test_data, type = "response")` and `cutoff` is the cutoff for the prediction decision rule between 0 and 1.
 
 - `multinom(response ~ predictors)` fits a multinomial logistic regression model (categorical response with multiple possible outcomes). Need `library(nnet)` to use this function.
 
@@ -147,4 +151,39 @@ Use `knitr::purl("filename.Rmd")` to create a .R file with all code chunks from 
   - Can calculate z scores for coefficients using `summary(model_result)$coefficients/summary(model_result)$standard.errors`.
   - Can calculate p-values for coefficients using `(1 - pnorm(abs(z_scores)))*2`.
 
-- Note on `set.seed()`: old versions of R used a "Rounding" sampler, while newer use a "Rejection" sampler. Even after updating R, some people need to run `RNGkind(sample.kind = "Rejection")` to use the new method. If ever trying to replicate results produced using old method, can run `RNGkind(sample.kind = "Rounding")` before calling `set.seed()`.
+#### Module 11: Regression for Time Series Data & Resampling Methods
+
+#### Module 12: Shrinkage Methods & Dimension Reduction
+
+- `glmnet(x, y, alpha = 0)` fits a ridge regression. Requires `library(glmnet)`. Similarly, `glmnet(x, y, alpha = 1)` fits a lasso regression.
+
+  - Note: `glmnet` cannot handle categorical variables that are not dummy coded, so it is recommended to create `x` using the `model.matrix()` function to form the design matrix for the specified regression and convert the categorical predictors into dummy codes. This is done by `x <- model.matrix(response ~ predictors, data)[, -1]` (the first column of the design matrix is a column of 1s that should be removed).
+  - The `thresh` parameter should be set to a very small value (i.e. `thresh = 1e-14`), especially if multicollinearity is present.
+  - Setting parameter `lambda = 0` will perform ordinary least squares regression. If `thresh` is small enough, coefficients will be nearly identical to coefficients from using `lm`.
+
+- `cv.glmnet(x_train, y_train, alpha)` performs cross-validation to determine the optimal value of lambda. If the result of that call is stored in a variable called `cv_result`, calling `cv_result$lambda.min` returns the optimal value of lambda that minimizes the MSE on the training set.
+
+  - Can also call `plot(cv_result)` to see a plot of MSE vs lambda.
+
+- Can compute test MSE using 
+
+  ```R
+  ridge_mod <- glmnet(x_train, y_train, alpha = 0, #or alpha = 1
+                    lambda = bestlam, thresh = 1e-14)
+  ridge_pred <- predict(ridge_mod,s = bestlam, newx = test_x)
+  mean((ridge_pred-y_test)^2)
+  ```
+
+- Can create a ridge plot showing coefficient values at different values of lambda using
+
+  ```R
+  grid <- 10^seq(10,-2,length=100)
+  out_all <- glmnet(x, y, alpha = 0, #or alpha = 1 
+                    lambda = grid, thresh = 1e-14)
+  plot(out_all, xvar = "lambda")
+  abline(v = log(bestlam), lty=2) #vertical line for optimal lambda
+  legend("bottomright", lwd = 1, col = 1:6, legend = colnames(x), cex = .7)
+  ```
+
+  
+
