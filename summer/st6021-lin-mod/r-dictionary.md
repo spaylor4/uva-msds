@@ -153,6 +153,19 @@ Use `knitr::purl("filename.Rmd")` to create a .R file with all code chunks from 
 
 #### Module 11: Regression for Time Series Data & Resampling Methods
 
+- `pacf(lm_result$residuals, main="PACF of Residuals")` creates a PACF plot of residuals. The largest significant lag ($p$) is the AR order for a linear regression model with AR($p$) autoregressive errors.
+
+- `arima(lm_result$residuals, order = c(p,0,0), include.mean = FALSE)` fits an AR($p$) structure. `arima_result$coef` gives the estimate of $\phi$.
+
+- Next, $x$ and $y$ need to be shifted using the estimates of $\phi$ to generate $x'$ and $y'$, then a linear model can be fit using `lm(yprime ~ xprime)`. For an AR(1) structure, this is done by $x'_t = x_t - \hat\phi_1 x_{t-1}$ and $y'_t = y_t - \hat\phi_1 y_{t-1}$. The R code for generating $x'$ and $y'$ for an AR(1) structure with `shift` equal to the estimate of $\phi_1$ is as follows:
+
+  ```R
+  y <- cbind(as.ts(orig_y), lag(orig_y))
+  yprime <- y[,2] - shift*y[,1]
+  x <- cbind(as.ts(orig_x), lag(orig_x))
+  xprime <- x[,2] - shift*x[,1]
+  ```
+
 #### Module 12: Shrinkage Methods & Dimension Reduction
 
 - `glmnet(x, y, alpha = 0)` fits a ridge regression. Requires `library(glmnet)`. Similarly, `glmnet(x, y, alpha = 1)` fits a lasso regression.
