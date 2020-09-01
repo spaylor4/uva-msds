@@ -42,6 +42,26 @@ Readings: ISL 1, 2.1; ESL 1, 2.1-2.4
   - The expected test MSE is equal to variance + bias$^2$ + variance of error terms. The variance of error terms is irreducible, so the best test MSE will have the lowest combination of bias and variance.
   - It is easy to find a model with either low bias or low variance, but much harder to find one with both.
   - Training MSE always declines as flexibility increases, but test MSE follows a U-shape.
+- KNN *curse of dimensionality*: with more features, distance to neighbors grows exponentially. In high dimensions, most neighbors aren't very "local."
+  - Need a large percentage of the range of each input to capture a fraction $r$ of the total volume of the data. E.g. in 10 dimensions, 80% of the range of each coordinate is needed to capture 10% of the data (neighborhood).
+  - In high dimensions, all sample points are close to an edge (and many are closer to an edge than to any other point).
+  - In high dimensions, training samples sparsely populate the input space. Size of training set needed grows exponentially with additional dimensions.
+- Additive error model $Y = f(X) + \varepsilon$ assumes that we can capture all deviations (due to measurement error, unmeasure variables, etc.) from a deterministic model ($Y = f(X)$) in the error $\varepsilon$. Many approximations of $f$ have an associated set of parameters $\theta$. For example, in a linear model, $\theta = \beta$.
+- *Maximum likelihood estimation* is one alternative to least squares. MLE assumes that the most reasonable values for $\theta$ are those for which the probability of the observed sample is largest.
+  - MLE using $Pr(Y | X, \theta) = N(f_\theta(x), \sigma^2)$ is equivalent to least squares with $Y = f(X) + \varepsilon$ with $\varepsilon \sim N(0, \sigma^2)$.
+
+#### Structured Regression Models
+
+- Minimizing RSS leads to infinitely many solutions, so we must restrict the eligible solutions to a smaller set of functions. These restrictions are sometimes encoded via the parametric representation of $f_\theta$, or may be built into the learning method itself.
+  - Usually restrict complexity to obtain an average or polynomial fit in a neighborhood based on some structure (e.g. nearly constant, linear or low-order polynomial).
+  - The larger the size of the neighborhood, the stronger the constraint, and the more sensitive the solution is to the particular choice of constraint.
+- There are three general classes of restricted estimators:
+  - Roughness penalty and Bayesian methods (e.g. cubic smoothing spline) add a penalty weight and function $\lambda J(f)$ to the RSS.
+    - Smoothing/complexity parameter = multiplier of penalty term $\lambda$.
+  - Kernel methods and local regression (e.g. nearest neighbor methods and local regression) use a kernel function $K_\lambda(x_0, x)$ to assign weights to points $x$ in a region around $x_0$.
+    - Smoothing/complexity parameter = width of kernel.
+  - Basis functions and dictionary methods involve linear expansions of basis functions and use some kind of search method to build models from a set/dictionary of candidate basis functions.
+    - Smoothing/complexity parameter = number of basis functions.
 
 ## Class Notes
 
@@ -61,7 +81,6 @@ Readings: ISL 1, 2.1; ESL 1, 2.1-2.4
   - If $k = 1$, the estimate will be the nearest observation. This is the most complex KNN model possible.
   - The complexity of a KNN model increases as $k$ decreases.
   - Must choose a suitable distance measure (e.g. Euclidean).
-- Curse of dimensionality: with more features, distance to neighbors grows exponentially. In high dimensions, most neighbors aren't very "local."
 - `knn.reg()` function from `FNN` package fits a KNN model.
 - Effective degrees of freedom (edf) of a KNN model is $n/k$.
   - Measure of complexity used to compare to parametric models (edf is approx. number of parameters estimated).
