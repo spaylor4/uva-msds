@@ -84,3 +84,20 @@ Readings: ISL 1, 2.1; ESL 1, 2.1-2.4
 - `knn.reg()` function from `FNN` package fits a KNN model.
 - Effective degrees of freedom (edf) of a KNN model is $n/k$.
   - Measure of complexity used to compare to parametric models (edf is approx. number of parameters estimated).
+
+*September 1, 2020*
+
+- Only know the best possible MSE if you know how the data was generated (very rarely know in actuality). In-class example used error terms with $\sigma^2$ = 4, which is the minimum possible MSE.
+- *Ensemble models* combine several models using weighted sums of models - "wisdom of crowds" prediction.
+
+#### Bias-Variance Tradeoff
+
+- Bias-variance tradeoff only strictly applies to squared error loss function, though the general principle will still apply.
+- Bias is difference of mean $\hat{f}(X=x)$ computed for different training sets from the true value $f(X=x)$. Bias is expected value with respect to training data, i.e. $E_D[\hat\theta] - \theta$.
+- Variance is measure of spread of data with different training data sets. $V_D[\hat\theta] = E_D[\hat\theta^2] - E_D[\hat\theta]^2$.
+- MSE = variance + bias$^2$
+- Bias-variance tradeoff is a theoretical property based on the distribution of an estimate. However in actuality, we only have one estimate.
+  - Still want to find the one with the right amount of complexity. Can use resampling methods (e.g. cross-validation) or statistical methods (e.g. BIC) to estimate risk/MSE.
+  - Although our in-class example found polynomial with degree of 4 to be the best, for a few simulations degree 2 or degree 8 performed better.
+- Variance tends to be higher at edges of X values.
+- Performance of a model can vary across input features X.
