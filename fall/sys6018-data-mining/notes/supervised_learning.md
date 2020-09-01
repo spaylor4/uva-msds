@@ -27,11 +27,21 @@ Readings: ISL 1, 2.1; ESL 1, 2.1-2.4
 - Kernal methods, local regression fits, and neural networks are enhanced procedures that draw from linear least squares and KNN.
 - Generally for developing models, we need a loss function for penalizing errors in prediction.
 - By far the most common loss function for regression is squared error loss, defined as $L(Y, f(X)) = (Y - f(X))^2$, sometimes called the $L_2$ loss function. The function that minimizes the expected value of squared error loss is the conditional expectation $f(x) = E(Y | X = x)$.
+  - *Mean squared error* (MSE) is the most commonly used measure of fit for regression. MSE = $\frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{f}(x_i))^2$.
+    - Usually care about test MSE rather than training MSE, and select model with lowest test MSE. 
+    - Test MSE can be much larger than training MSE, in which case the model is overfitting the data. This is because training MSE always decreases as model flexibility increases, but test MSE does not.
   - KNN approximates the expectation by averaging over sample data and approximates conditioning at a point to conditioning on some region "close" to a point, since there is often only one observation at each point $x$. KNN uses $\hat{f}(x) = Ave(y_i | x_i \in N_k(x))$.
   - Least squares does not condition on $X$, but rather uses our knowledge of a functional relationship to pool over values of $X$.
   - For the $L_1$ loss function $L(Y, f(X)) = E(|Y - f(X)|)$, the solution that minimizes loss is $\hat{f}(x) = median(Y | X=x)$. $L_1$ loss is used less due to discontinuities in its derivatives.
-- Most commonly-used loss function for classification is the zero-one loss function, where each misclassification is penalized one unit.
-  - The *Bayes classifier* for a categorical variable $G$ that can assume values in $\mathcal{G}$ using the 0-1 loss function is $\hat{G}(x) = \mathcal{G}_k$ if Pr$(\mathcal{G}_k |X=x) = max_{g \in \mathcal{G}}$Pr$(g|X=x)$. The error rate of this classifier is called the *Bayes rate*.
+- Most commonly-used loss function for classification is the zero-one loss function, where each misclassification is penalized one unit. Called the *error rate* and is equal to $\frac{1}{n}\sum_{i=1}^{n}I(y_i \not= \hat{y}_i)$. As with regression, the a low test error rate indicates a better model fit.
+- The *Bayes classifier* for a categorical variable $G$ that can assume values in $\mathcal{G}$ using the 0-1 loss function is $\hat{G}(x) = \mathcal{G}_k$ if Pr$(\mathcal{G}_k |X=x) = max_{g \in \mathcal{G}}$Pr$(g|X=x)$. 
+  - The error rate of this classifier is called the *Bayes rate* or *Bayes error rate*, which is the lowest possible test error rate. The Bayes error rate is analogous to the irreducible error. 
+  - The *Bayes decision boundary* is the dividing line between the different class predictions.
+  - Don't know the Bayes classifier for real data. KNN is one method that atttempts to estimate the conditional distribution of $Y$ given $X$ and classify accordingly.
+- Bias-variance tradeoff: variance is the amount by which $\hat{f}$ would change if estimated with a different training set, while bias refers to error introduced by approximating a real-life problem with a model (since a model likely oversimplifies the problem). More flexible models generally have higher variance and lower bias.
+  - The expected test MSE is equal to variance + bias$^2$ + variance of error terms. The variance of error terms is irreducible, so the best test MSE will have the lowest combination of bias and variance.
+  - It is easy to find a model with either low bias or low variance, but much harder to find one with both.
+  - Training MSE always declines as flexibility increases, but test MSE follows a U-shape.
 
 ## Class Notes
 
