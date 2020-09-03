@@ -4,8 +4,9 @@ Readings: *Introduction to Algorithms* chapters 1-3
 
 - An **algorithm** is a detailed step-by-step method for solving a problem.
   - Steps are precisely stated and determined based on inputs & previous steps.
+  - Input sometimes called precondition; output sometimes called postcondition.
 - **Data structures** are logical relationships among data elements designed to support specific manipulations. Ex: array, table, etc.
-- Compare the algorithms that implement operations in order to compare the operations' efficiency. Time is usually the most-relevant measure of efficiency (others include memory and CPU usage).
+- Compare the algorithms that implement operations in order to compare the operations' efficiency. Time is usually the most-relevant measure of efficiency (others include space/memory and CPU usage).
   - Efficiency usually depends on the size and nature of the input.
   - **Benchmarking** = timing of algorithm for some specific input. Inadequate for predicting performance on other data sets.
 - The processing time can be expressed as a function of $n$, the problem size. **Asymptotic analysis** examines the behavior of $f(n)$ as $n$ gets large (since that is when differences in performance become apparent and matter more). This gives an estimate of the scalability of the program.
@@ -23,6 +24,7 @@ Readings: *Introduction to Algorithms* chapters 1-3
     - O(n lg n): log-linear time (e.g. best sorting algorithms like Quicksort and Mergesort)
     - O(n$^2$): quadratic time (e.g. poorer sorting algorithms, double-nested loops)
     - O(2$^n$): exponential time (e.g. recursive Fibonacci implementation, generating all permutations of $n$ symbols)
+- Linear or log-linear algorithms are the goal.
 
 #### Sorting Algorithms
 
