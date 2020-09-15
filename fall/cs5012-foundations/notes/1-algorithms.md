@@ -33,6 +33,6 @@ Readings: *Introduction to Algorithms* chapters 1-3
   - Worst case run time is $\Theta(n^2)$.
   - Insertion sort is an **incremental** approach: each item is inserted into a sorted subarray (the "left hand") one at a time.
 - **Merge sort** divides an array into two arrays of size $n/2$, sorts the two subarrays recursively using merge sort, and then merges the two sorted subarrays. To merge the two sorted subarrays, the smallest elements of each are compared and placed from smallest to largest. Merging terminates when a sentinel value (usually $\infty$) is reached at the end of both subarrays.
-  - **Divide & conquer** approach: divide the problem into subproblems, solve each, and combine the subproblem answers to get an overall answer.
+  - **Divide & conquer** approach: divide the problem into subproblems that are smaller instances of the same problem, solve each, and combine the subproblem answers to get an overall answer. Divide & conquer approach solves problems **recursively**.
   - Worst-case run time is $\Theta(n logn)$.
   - Diagram on pg. 35 of textbook shows overall process.

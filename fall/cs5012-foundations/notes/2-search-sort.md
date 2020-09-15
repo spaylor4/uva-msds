@@ -17,13 +17,18 @@
   - Does not generally produce an optimal solution, but may approximate the global optimal solution in a reasonable amount of time.
   - Complexity O(b$^m$) in terms of nodes and branches. Good heuristic dramatically improves speed.
 - **A\* search** is another special case of best-first search noted for its performance and accuracy (generates more optimal solutions than greedy search).
+  - Widely-used in path finding and graph traversal (finding efficient path between nodes).
+  - Evaluates cost so far to reach point plus estimated cost from point to goal.
+  - Optimality requirement: A* needs an admissable heuristic to estimate cost from current point to goal, one that is greater than or equal to 0 but less than or equal to the true cost from the current point to the goal. 
+    - If this requirement is satisfied, A* tree search never returns a non-optimal solution.
 
 ### Sorting
 
 - **Internal sorting** is used when all data is already available or can be loaded all at once in the computer memory.
 - **External sorting** is used when the data (array/vector) cannot fit into the computer's memory.
   - Hadoop can handle large amounts of data in a distributed system.
-- A sorting algorithm is **stable** if elements with the same key appear in output in the same order as they do in the input array (when sorting on the value).
+- A sorting algorithm is **stable** if elements with the same key appear in output in the same order as they do in the input array (when sorting on the value). Stable sorting algorithms are preferred.
+- Sorting algorithms that operate in place (without creating a new array) are preferred to those that do not.
 - Sorting is required to make many other algorithms work well (e.g. binary search).
 - **Bucket sort** creates an array of length equal to the largest element of the original array, then places each element at the index equal to the element's value.
   - Can store duplicates in a linked list at the duplicate's index, or can use a counter at each index.
@@ -33,8 +38,9 @@
   - Very efficient and stable; relatively simple to code.
   - O(n log n) complexity.
 - **Insertion sort** is simple and appropriate for small inputs (e.g. hand of cards). Each item is inserted into a sorted subarray (the "left hand") one at a time.
-  - Worst case run time is O(n$^2$).
+  - Worst case run time is O(n$^2$). Insertion sort is good when problem size is small or when data is already sorted or nearly sorted.
   - Does not require additional memory; can be fast if list is already almost sorted.
+  - Insertion sort is stable.
 - **Loop invariants** used to prove algorithm correctness. Checks whether properties hold true at initialization, maintenance, and termination.
 - **Quicksort** divides & conquers by splitting an array into two parts, recursively sorting each, and concatenating the two pieces.
   - Requires reordering so that all values less than a particular element (called the pivot) come before the pivot and all values greater than the pivot come after it.
@@ -42,3 +48,6 @@
   - Not stable in efficient implementations.
 - **Selection sort** works by selecting the smallest unsorted item and swapping it with the item in the next position to be filled, continuing until sorting is complete.
   - Complexity O(n$^2$) for best, worst, and average case.
+  - Selection sort is not stable but is in-place.
+  - Might want to use selection sort if we desire minimal data movement, but generally not good due to complexity.
+  - Selection sort [animation](https://www.toptal.com/developers/sorting-algorithms/selection-sort) shown in class.
