@@ -26,6 +26,15 @@ Readings: ISL 4.1-4.6; ESL 4.1-4.4, 6.6.3
 - Quadratic discriminant analysis is a similar method to LDA, but assumes that each class has its own variance-covariance matrix.
   - LDA less flexible than QDA, so it has lower variance and higher bias.
   - LDA generally better when there are relatively few training observations; QDA generally better when training data is large or when the assumption of a common variance-covariance matrix is clearly not met.
+- Both LDA and logistic regression produce linear decision boundaries, but with different fitting procedures: logistic regression uses maximum likelihood, while LDA uses the estimated mean and variance from a normal distribution.
+- KNN works well when decision boundary is very non-linear (since it is a non-parametric method). QDA is a compromise between KNN and LDA in terms of flexibility.
+
+### Naive Bayes Classifier
+
+- Assumes that for a given class, the features $X_k$ are independent.
+  - Generally not true, but simplifies estimation dramatically, making Naive Bayes especially suitable for high-dimensional feature spaces.
+  - This assumption may increase bias, but saves variance.
+- Similar form to generalized additive model. Naive Bayes relationship to generalized additive model is analogous to the relationship between LDA  and logistic regression.
 
 ## Class Notes
 
