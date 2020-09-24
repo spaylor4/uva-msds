@@ -52,3 +52,15 @@ Readings: ISL 4.1-4.6; ESL 4.1-4.4, 6.6.3
 - In some binary classification settings (e.g. cancer diagnosis), a false negative is much worse than a false positive.
   - Zero-one loss treats false positives and false negatives the same.
 - Squared error: linear regression; absolute error: quantile regression; Bernoulli negative log-likelihood: logistic regression.
+
+*September 22, 2020*
+
+- On HW3, the top performing models all seemed to use repeated cross-validation. Some people did more variable transformation, some people dropped the pool variable or converted it to Y/N, some standardized variables, etc.
+- Optimal hard classification decision: $\frac{p(x)}{1- p(x)} \ge \frac{L(0, 1) - L(0, 0)}{L(1, 0) - L(1, 1)} = \frac{FP - TN}{FN - TP}$
+- Best evaluation metric is risk/expected cost.
+
+*September 24, 2020*
+
+- Classification models we've considered so far are discriminative - focused on estimating conditional probability $P(Y = k | X = x)$. Generative classification models try to model the joint distribution $P(Y = k, X = x) =$  $P(X =x |Y = k)P(Y = k)$.
+  - Optimal decision based on density ratio log$(\hat{\frac{f_1(x)}{f_0(x)}})$.
+- Both LDA and QDA model the class conditional densities $f_k(x)$ with Gaussians, LDA with equal variance-covariance matrices among classes and QDA with different variance-covariance matrices.
