@@ -64,3 +64,9 @@ Readings: ISL 4.1-4.6; ESL 4.1-4.4, 6.6.3
 - Classification models we've considered so far are discriminative - focused on estimating conditional probability $P(Y = k | X = x)$. Generative classification models try to model the joint distribution $P(Y = k, X = x) =$  $P(X =x |Y = k)P(Y = k)$.
   - Optimal decision based on density ratio log$(\hat{\frac{f_1(x)}{f_0(x)}})$.
 - Both LDA and QDA model the class conditional densities $f_k(x)$ with Gaussians, LDA with equal variance-covariance matrices among classes and QDA with different variance-covariance matrices.
+
+*September 29, 2020*
+
+- R error messages about lack of convergence for nonpenalized logistic regression (`glm`) occurs when classes are separable.
+  - Classes being separable basically causes the model to try to fit a line with infinite slope to separate the two classes, and there are an infinite number of possible dividing lines between the two classes.
+  - If only interested in hard classifications, it's not really a concern. But more of an issue if predicting probabilities.
