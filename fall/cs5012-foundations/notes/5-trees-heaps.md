@@ -2,6 +2,11 @@
 
 Readings:
 
+### Data Structures
+
+- Data structures are ways to organize your data. Choosing the right data structure can significantly improve speed of algorithms.
+  - Tradeoffs in efficiency exist between different data structures. For example, an unsorted array takes just O(1) for insertion but O(n) for find, while a sorted array takes O(n) for insertion and O(lg n) for find. A balanced binary search tree allows for O(lg n) for both insert and find operations.
+
 ### Binary Search Trees
 
 - Want to be able to find items quickly, handle inserts and deletes.
@@ -12,7 +17,7 @@ Readings:
 - Binary search tree Find operation compares target value with root and traverses left if less than root and right otherwise, stopping when item found or at a leaf.
   - Similar to binary search.
   - Complexity O(log n), worst case height of tree.
-- BST Insert operation performs a find operation for the value to insert, then add it to the left or right as appropriate.
+- BST Insert operation performs a find operation for the value to insert, then adds it to the left or right as appropriate.
 - BST Delete operation more complicated, since a replacement node needs to be chosen.
   - If 0 children, delete node.
   - If 1 child, replace node with its child.
@@ -40,5 +45,7 @@ Readings:
 - Two most important methods for heaps are inserting new values (maintaining the order & shape) and retrieving the smallest value (root), rebuilding the heap afterward.
   - Insert: add element to bottom level, compare with parent, swap if necessary to maintain correct order, repeating until new element in correct place. Complexity O(log n).
   - Delete: remove the root node and replace it with the last element on the last level, then swap the new root with its children until order is restored. Complexity O(log n).
-    - Swap with smaller child in minheap and larger in maxheap (so that correct element winds up as new root).
+    - Swap with smaller child in minheap and larger in maxheap (so that correct element winds up as new root). Worst case will take number of operations equal to height of tree, if new element needs to go all the way to the top of the heap.
   - Building an entirely new queue takes O(n log n) time, significantly faster than implementing via arrays.
+- Heap sort involves turning an array into a heap, then popping each element (since the smallest element is always popped/removed). This is O(n lg n), since heapify is O(n) and popping each element is O(n lg n).
+  - Same complexity as merge sort and quick sort.
