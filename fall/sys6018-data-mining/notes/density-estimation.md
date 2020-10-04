@@ -1,6 +1,17 @@
 # Density Estimation
 
-Readings: IPSUR ch. 9.1 MLE Intro, [Maximum Likelihood Estimation](https://www.math.arizona.edu/~jwatkins/O_mle.pdf), IPSUR ch. 5-7 Random Variable review
+Readings: IPSUR ch. 9.1 MLE Intro, [Maximum Likelihood Estimation](https://www.math.arizona.edu/~jwatkins/O_mle.pdf), IPSUR ch. 5-7 Random Variable review; [Silverman](https://books.google.com/books?id=e-xsrjsL7WkC&lpg=PP1&pg=PA20#v=onepage&q&f=false) ch. 2.1-2.6
+
+- Histograms provide a simple density estimator.
+- The naive estimator counts the number of observations falling within a range centered on each $x$ divided by the total number of observations times the width of the range.
+  - Not a continuous function; more like a histogram with each observation having a bin.
+- Kernel estimators sum probability distribution functions (often Gaussian) centered at each observation.
+  - As with naive estimator, depends on smoothing parameter $h$, the window width.
+  - Gives a smooth/continuous pdf.
+  - Can show spurious noise in long-tailed distributions.
+- K-nearest neighbor estimators adapt the amount of smoothing to the local density of the data.
+  - Related to naive estimator and likewise is not smooth.
+- Variable kernel estimator marries classical kernel and k-nearest neighbor approaches to produce a smooth curve but have flatter kernels where observations are sparse.
 
 ### Point Estimation
 
