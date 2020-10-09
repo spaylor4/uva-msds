@@ -27,3 +27,21 @@ Keeping track of R functions, use cases, and interpretations learned throughout 
   - `predict(tune_result$best.model, test_data)` will give predictions for test data.
 - Can use `kernel = "polynomial"` or `kernel = "radial"` to fit other types of kernels.
   - For radial kernels, use `gamma` parameter to specify the radial basis kernel.
+
+### Kernel Density Estimation
+
+- `kde(data, h)` performs univariate kernel density estimation for data with bandwidth `h`.
+  - Can choose `h` using `hpi` (plug-in; default method) `hscv` (smoothed cross-validation), `hucv` (unbiased cross-validation), or `hlscv` (least squares cross-validation) functions.
+  - Can do multivariate KDE with `kde(data, H)`.
+    - `H` can be chosen similarly to in the univariate case, but using `Hpi`, `Hscv`, `Hucv`, or `Hlscv` functions.
+
+### Clustering
+
+- `kmeans(data, k, nstart=num)` performs $K$-means clustering.
+  - The `nstart` argument specifies how many multiple random assignments to use in step one of the algorithm before reporting the best results. Values of at least 20-50 are recommended.
+  - The resulting object, say `km_out`, has  `km_out$cluster` with the cluster assignments and`km_out$tot.withinss` with the total within-cluster sum of squares.
+- `hclust(dist(data), method = "complete")` performs hierarchical clustering, where method can be `"complete"`, `"average"`, `"single"`.
+  - The `dist()` function computes the inter-observation distance matrix. Can be Euclidean, Manhattan, or a few other measures of distance. 
+    - Manhattan distance is distance in $x$ direction plus distance in $y$ direction (often useful for human movement problems).
+  - Can use `cutree(hc_out, n_clusts)` to get the cluster labels for a given number of clusters.
+
