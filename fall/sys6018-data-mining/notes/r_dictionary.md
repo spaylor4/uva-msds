@@ -45,3 +45,20 @@ Keeping track of R functions, use cases, and interpretations learned throughout 
     - Manhattan distance is distance in $x$ direction plus distance in $y$ direction (often useful for human movement problems).
   - Can use `cutree(hc_out, n_clusts)` to get the cluster labels for a given number of clusters.
 
+### Tree-Based Methods
+
+- `tree(y ~ eq, data)` fits a regression or classification tree (using basically the same syntax as `lm`). The `tree` function comes from the `tree` package.
+  - Calling `summary(tree_result)` outputs info including variables used, number of terminal nodes, and training misclassification error rate (for classification) or deviance (for regression, equivalent to sum of squared error).
+  - Can use `predict(tree_result)` to make predictions. Need argument `type = "class"` for classification to get a hard class decision.
+- `cv.tree(tree_result)` performs cross-validation to determine the optimal level of tree complexity.
+  - Default metric is deviance, but can be changed using `FUN` argument. For example, `FUN = prune.misclass` uses the misclassification error rate.
+  - The resulting `k` attribute is the $\alpha$ complexity penalty used.
+  - The resulting `dev` attribute is the value of the error metric (deviance, misclassification error rate, or other specified metric) for each tree.
+- After choosing an optimal size with `cv.tree`, can then prune the original tree using `prune.tree(tree_result, best = opt_size)` or `prune.misclass(tree_result, best = opt_size)` as appropriate.
+- Both bagging and random forest can be performed with using `randomForest(response ~ eq, data = data, mtry = mtry, importance = TRUE, subset = train)` function (from the `randomForest` package).
+  - `mtry` argument specifies $m$ parameter of number of variables to consider at each split. Specifying $m$ equal to the total number of predictors results in bagging rather than random forest. Default is $p/3$ for regression and $\sqrt p$ for classification.
+  - `importance(rf_result)` shows the importance of each variable.
+- Boosting can be done with `gbm(response ~ eq, data = data, distribution = "gaussian", n.trees = n.trees, interaction.depth = depth)` from the `gbm` package. Parameter `distribution = "gaussian"` used for regression; would use `distribution = "bernoulli"` for classification.
+  - Can specify values of the shrinkage parameter $\lambda$ using the `shrinkage` argument (default is 0.001).
+
+ 
