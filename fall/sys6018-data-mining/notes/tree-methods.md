@@ -66,3 +66,18 @@ Readings: ISL 8.1-8.3; ESL 9.2, 15
 - Pruning is like backward stepwise selection: grow a full tree and cut off leaf nodes that don't add much to the model.
   - Tree-building is greedy, so bad initial split could lead to good final split.
 - Recommended to use $\lambda$ rather than tree size as tuning parameter.
+
+*October 20, 2020*
+
+- Missing predictor values: one option is to impute (replace with another value). 
+  - Most common imputation method involves using the mean for that predictor, but this isn't the best way. Surrogate split (similar to nearest neighbor) may be better.
+- Advantages of trees:
+  - Trees are usually invariant to monotone transformations (e.g. log). Can be robust to outliers in the feature space.
+  - Easy to interpret.
+- Limitations of trees:
+  - Unstable/high variance due to greedy nature. Bagging helps to reduce variance.
+- Bagging for classification: should use average of predicted class probabilities rather than majority vote (though book mentions majority vote and it is commonly used).
+- Random forest has two main tuning parameters:
+  - $m$ number of predictors evaluated for each split. Changing $m$ can lead to lower forest variance and higher tree variance (as well as higher forest bias).
+  - Depth/size (complexity) of each tree.
+  - Number of trees is also a tuning parameter: needs to be big enough that performance no longer changes significantly (can visually inspect).
