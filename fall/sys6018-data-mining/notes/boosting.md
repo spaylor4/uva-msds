@@ -51,6 +51,10 @@ Readings: ESL 10.10-10.14; XGBoost [paper](https://arxiv.org/pdf/1603.02754.pdf)
 
 - Gradient boosting implemented in R's `gbm` package.
 
+- XGBoost is a scalable system for tree boosting that produces fast, good results.
+
+  - Utilizes parallel, distributed, and out-of-core computing to achieve much faster speeds than other tree boosting implementations.
+
 ## Class Notes
 
 *October 27, 2020*
@@ -67,3 +71,15 @@ Readings: ESL 10.10-10.14; XGBoost [paper](https://arxiv.org/pdf/1603.02754.pdf)
   - Can be used for classification, regression, survival analysis, ranking, etc.
 - $L_2$ boosting is based on the squared error loss function.
   - The negative gradients are the residuals in this case.
+
+*October 29, 2020*
+
+- Like AdaBoost, $L_2$ boosting gives emphasis to observations that are predicted poorly (large residuals).
+- Deeper trees at each stage allow for interactions between variables. Deeper trees also require fewer iterations.
+- Small $\nu$ shrinkage parameter requires more steps, but theoretically $\nu$ very close to zero is preferable.
+- `xgboost` package has superceded `gbm` package for gradient boosting in R.
+  - Able to use multiple cores and GPU to speed up computation.
+  - Optimization function in form loss + penalty, as we've seen in other methods.
+  - Uses Hessian (2nd order) rather than gradient (1st order). Analogous to Newton-Raphson algorithm for logistic regression.
+  - Can do feature sampling as in random forest.
+- CatBoost useful when data has lots of categorical data.
