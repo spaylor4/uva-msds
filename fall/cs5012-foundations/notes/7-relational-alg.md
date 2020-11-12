@@ -6,7 +6,7 @@
   - Different from SQL `SELECT` statement (equivalent to `WHERE`).
 - **Projection** returns specific attributes (columns) from a relation (as in SQL `SELECT`).
   - Duplicate tuples are removed in resulting relation.
-- **Rename** renames the result of an expression and its attributes.
+- **Rename** renames the result of an expression and (optionally) its attributes.
 - **Union** combines tuples from two relations.
   - Relations must have same number of attributes and compatible data types.
   - Equivalent to "or" and to a SQL `UNION ALL` operation.

@@ -34,3 +34,7 @@
   - Can for the most part ignore which database engine is used.
 - Schema is logical design of the database, while an instance is a snapshot of the data stored in the database at a particular time.
   - Schema : class in object oriented programming :: instance : variable in object oriented programming.
+- A relation is the equivalent of a table in relational algebra and theoretical mathematical databases. Relations have no order and no duplicates, unlike tables.
+  - Relations have tuples and attributes instead of rows and columns.
+- A super key is any set of attributes that uniquely define a tuple. A candidate key is a minimal super key (i.e. no unnecessary attributes). A primary key is the candidate key chosen by the database admin to be used for a particular table.
+- Data definition language (DDL) affects the schema (e.g. `CREATE` or `ALTER TABLE` statements). Data manipulation language (DML) affects an instance (e.g. `SELECT`, `INSERT`, or `UPDATE` statements).

@@ -12,7 +12,7 @@
   - Self-referential relationships are when occurences of an entity set play different "roles" in a relationship (e.g. course ID and pre-req ID).
 - **Total participation** means that all entities in an entity set participate in a relationship.
   - Represented by a double line in E-R diagram.
-- **Cardinality** (one-to-one, one-to-many, etc.) represented by arrows: the line said represents the "many" side, while the arrow side represents the "one" side.
+- **Cardinality** (one-to-one, one-to-many, etc.) represented by arrows: the line side represents the "many" side, while the arrow side represents the "one" side.
   - If the relationship is 1:1, pick one of the two primary keys to be the primary key of the relationship.
   - If the relationship is m:m, both of the primary keys form the primary key of the relationship.
   - If the relationship is 1:m or m:1, the primary key on the many side is the primary key of the relationship.
@@ -26,7 +26,5 @@
 - **Generalizations** and **specializations** are like superclasses and subclasses - they have an "is a" relationship, and the specialization has the more info than the generalization.
   - When choosing how to create tables for generalizations and specializations, want to minimize duplication.
 - Each entity set and relationship set correspond to one table in a database (and corresponding ER diagram).
-
-### Class Notes
 
 - A schema is like a contract between you and a database that helps make the database more efficient.
