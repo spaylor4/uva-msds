@@ -39,7 +39,20 @@ Readings: Network Science [Book](http://networksciencebook.com/chapter/2) Ch. 2;
   - Local clustering coefficient $C-i = \frac{2L_i}{k_i(k_i - 1)}$, where $L_i$ is the number of links between the $k_i$ neighbors of node $i$. $C_i$ is between 0 and 1.
   - The global clustering coefficient measure the number of closed triangles in a network.
 
+### Page Rank
 
+- The Web can be represented as a directed graph with pages as nodes and links between pages as edges.
+- A random surfer moves from page to page randomly, with equal probability for each link on the current page. This can be represented by a transition matrix. The limiting distribution of this transition matrix gives the limiting probability of where a random surfer will be after a long time. The higher this probability, the more important the page is for PageRank.
+  - In practice, 50-75 multiplications of the transition matrix will sufficiently converge. Due to the size of the matrix, MapReduce usually needed for computation (breaks matrix into vertical stripes).
+  - Requires that the graph be strongly connected (any node reachable from any other node) and have no dead ends, which is not true in practice.
+    - A spider trap is a set of nodes with no dead ends but no arcs out.
+  - Transition matrix is very sparse, since there are billions of web pages, with an average of only ~10 links each. Often use edge list representation instead to save space.
+- One method for dealing with dead ends involves removing all dead ends before computing the limiting probabilities, then calculating a PageRank for the dead end nodes based on their predecessors' PageRank (weighted by the number of descendants of the predecessor).
+  - Probabilities will no longer sum to 1 but will give relative importance of pages.
+- Another method that deals with both dead ends and spider traps involves "taxation," giving a small probability that the random surfer leaves the Web at each step.
+- Topic-sensitive PageRank creates different ranking vectors for some small number of topics, then tries to classify users based on their degree of interest in each topic.
+  - Topic-sensitive PageRank biases results toward a topic by starting new random surfers on pages within that topic.
+- Hubs & authorities (or HITS: hyperlink-induced topic search) is an alternative to PageRank based on the idea that some webpages provide information (authorities) and others tell you where to go to find information (hubs). Good hubs link to good authorities and good authorities are linked to by good hubs.
 
 ## Class Notes
 
@@ -51,6 +64,21 @@ Readings: Network Science [Book](http://networksciencebook.com/chapter/2) Ch. 2;
 - Nodes and edges can have optional attributes. Can add attributes after creating a graph with `igraph` or `tidygraph`.
 - `igraph::simplify` function will remove multiple edges and loops.
   - Need to be careful, since node attributes will be summed when doing so unless specified otherwise.
-- Degree of nodes is one measure of importance/centrality.
 - Graph Laplacian matrix $L = D - A$, where $D$ is a diagonal matrix with the degree of each node along the diagonal and $A$ is the adjacency matrix.
 - Ego-neighborhood of node $i$ is all nodes that $i$ is connected to.
+
+*November 12, 2020*
+
+- Homophily: when connected nodes are more similar to each other than nodes they are not connected to. If homophily is present, can make predictions about a node based on its neighbors.
+- Laplace Smoothing: $p_0$ prior probability (of fraudster in class example), $\hat{p}_i = \sum y_i/d_i$ (MLE). New estimate is $\pi_i\hat{p}_i + (1 - \pi_i)p_0$ ($\pi$ specifies how much trust is placed in data; small $\pi$ if not much data). Set $\pi_i = \frac{d_i}{d_i + k}$, where $k$ is a chosen number of pseudo-nodes.
+  - Smooths/shrinks estimate toward prior.
+  - Can use resampling to choose $k$. Example in "node-predict.R" script.
+- Link prediction: predict whether a link exists between two nodes based on their attributes.
+
+- Degree of nodes is one measure of importance/centrality (most basic measure of centrality). Called degree centrality.
+  - $c_i = \sum_j A_{ij}$ and $c = A * 1_{|V|}$, where $c$ is a vector of node centrality measures.
+- Closeness centrality measures how close each node is to other nodes.
+  - Only works for connected graphs.
+- Betweenness centrality measures how many shortest paths pass through a given node.
+- Eigenvalue centrality is related to the idea that important nodes are linked to other important nodes.
+  - PageRank is very similar but with a few modifications. PageRank uses a dampening factor (small probability that random surfer exits and restarts at random page) to deal with friendless nodes, dead ends, and spider traps.
