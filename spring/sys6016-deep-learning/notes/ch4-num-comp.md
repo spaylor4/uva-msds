@@ -31,3 +31,18 @@ Deep Learning Book [Ch. 4](https://www.deeplearningbook.org/contents/numerical.h
   - Each constraint gets a KKT multiplier $\lambda_i$ or $\alpha_j$, giving the generalized Lagrangian $L(\boldsymbol{x, \lambda, \alpha}) = f(\boldsymbol{x}) + \sum_i \lambda_i g^{(i)}(\boldsymbol{x}) + \sum_j \alpha_j h^{(j)}(\boldsymbol{x})$.
   - As long as at least one feasible point exists and $f(\boldsymbol{x})$ can't have value $\infty$, then $\text{min}_x \text{max}_\lambda \text{max}_{\alpha, \alpha \ge 0} L(\boldsymbol{x, \lambda, \alpha})$ has the same set of optimal points as $\text{min}_{\boldsymbol{x} \in \mathbb{S}} f(\boldsymbol{x})$.
 
+### Video - Ian Goodfellow [Numerical Computation for Deep Learning](https://www.youtube.com/watch?v=XlYD8jn1ayE&feature=emb_title)
+
+- Real numbers cannot be implemented in a finite computer (e.g. $\pi$).
+- Gradient descent is an iterative algorithm used in much of deep learning. In 2-d, the gradient is the derivative, and gradient descent moves left when the derivative is positive and right when it is negative. In other words, the algorithm moves downhill.
+  - In deep learning, finding a global minimum is often infeasible, and often don't even reach a local minimum due to numerical computation issues. Instead of stopping only when the gradient is 0, we stop when $f(x)$ is very small.
+  - Often run from multiple random starting points to see if some give lower values.
+- Saddle points can be an issue for iterative optimization algorithms. At these points, the gradient is zero, but they are a maximum one dimension. These points attract Newton's method.
+- Curvature indicated by Hessian matrix, which along with a direction vector can give the second derivative in that direction.
+- Taylor series expansion used to predict optimal gradient size: $\epsilon^* = \frac{\boldsymbol{g^Tg}}{\boldsymbol{g^T Hg}}$, where $\boldsymbol{g}$ is the gradient and $\boldsymbol{H}$ is the Hessian.
+  - Derived from the Taylor series expansion of the next iterative point: $f(x^{(0)} - \epsilon\boldsymbol{g}) \approx f(x^{(0)}) - \epsilon\boldsymbol{g^Tg} + \frac{1}{2}\epsilon^2\boldsymbol{g^T Hg}$.
+  - When we have positive curvature, numerator tells us that bigger gradients mean we can take bigger steps - speeds up algorithm.
+  - When we have positive curvature, denominator tells us that big eigenvalues reduce step size if gradient aligns with the Hessian's eigenvectors - slows down algorithm. Otherwise you may jump past the minimum and to an uphill point.
+- The condition number is the maximum ratio between any two eigenvalues of the Hessian, A large condition number requires that you keep the learning rate small.
+
+Resume at 24:07

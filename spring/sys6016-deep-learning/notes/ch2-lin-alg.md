@@ -52,3 +52,12 @@ Deep Learning Book [Ch. 2](https://www.deeplearningbook.org/contents/linear_alge
 - The **determinant** of a square matrix det($\boldsymbol{A}$) is equal to the product of all eigenvalues of the matrix.
   - If the determinant is 0, multiplying by the matrix contracts space completely along at least one dimension. If the determinant is 1, multiplying by the matrix preserves volume.
 
+### Video - [The Applications of Matrices](https://www.youtube.com/watch?v=rowWM-MijXU&feature=emb_title)
+
+- Multiplying a vector by a matrix *scales* and/or *rotates* the vector.
+  - Different input vectors will be scaled/rotated differently, but the transformations are linear, so any input in the same direction as another input will be output in the same direction.
+  - Any vector that is only scaled (not rotated) by a matrix is an eigenvector of that matrix. The scale factor (change in length) is the eigenvalue.
+- The eigenvector is the equilibrium point (zombie example) of a Markov matrix in the long run.
+- In image processing, *kernels* are matrices multiplied with images (in a moving window) to blur, sharpen, find edges, or perform other processing tasks.
+- Squaring an adjacency matrix gives the number of paths of length two between any two nodes. Likewise cubing the matrix gives the number of paths of length three between any two nodes.
+- Hill cypher uses matrices to encrypt/decrypt information.
