@@ -61,3 +61,15 @@ Deep Learning Book [Ch. 2](https://www.deeplearningbook.org/contents/linear_alge
 - In image processing, *kernels* are matrices multiplied with images (in a moving window) to blur, sharpen, find edges, or perform other processing tasks.
 - Squaring an adjacency matrix gives the number of paths of length two between any two nodes. Likewise cubing the matrix gives the number of paths of length three between any two nodes.
 - Hill cypher uses matrices to encrypt/decrypt information.
+
+### Class Notes
+
+*Feb 3, 2021*
+
+- Rotations (with no scaling) involve orthogonal matrices with determinant 1.
+- A real symmetric matrix is Hermitian, so all of its eigenvalues are real.
+- The determinant of a matrix is equal to the product of its eigenvalues.
+- The condition number is the largest eigenvalue divided by the smallest eigenvalue. Large condition number leads to instability, as small changes in input will lead to large changes in ourput when multiplied by the matrix.
+- A matrix of eigenvectors is orthonormal.
+  - When an orthonormal matrix is multiplies by its transpose, the result is the identity matrix.
+- Some classmates recommended 3Blue1Brown for review, especially the [eigenvectors and eigenvalues video](https://www.youtube.com/watch?v=PFDu9oVAE-g).

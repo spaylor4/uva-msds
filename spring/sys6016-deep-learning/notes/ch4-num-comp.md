@@ -18,7 +18,7 @@ Deep Learning Book [Ch. 4](https://www.deeplearningbook.org/contents/numerical.h
   - The Hessian can be used to determine if critical points are local max/min or saddle points. If the Hessian is positive definite (all eigenvalues positive), the point is a local minimum. If it is negative definite, the point is a local max.
   - The condition number of the Hessian measures how much the multiple second derivatives at a point differ from each other. When the Hessian has a poor condition number, gradient descent performs poorly.
 - **Newton's method** uses information from the Hessian to guide the search by using a second-order Taylor series expansion to approximate $f(\boldsymbol{x})$ near some point $\boldsymbol{x}^{(0)}$. This method solves the Taylor series expansion for the critical point $\boldsymbol{x}^* = \boldsymbol{x}^{(0)} - \boldsymbol{H}(f)(\boldsymbol{x}^{(0)})^{-1}\Delta_x f(\boldsymbol{x}^{(0)})$.
-  - When $f$ is a positive definite quadratic function, applying this equation will give to the minimum.
+  - When $f$ is a positive definite quadratic function, applying this equation will jump to the minimum.
   - When $f$ can be locally approximated by a positive definite quadratic function, this function can be applied iteratively to update the approximation more quickly than with gradient descent.
   - Newton's method is only appropriate when near a minimum critical point (all values of Hessian are positive).
 - Optimization algorithms that only use the gradient are called **first-order optimization algorithms**, while those that also use the Hessian are called **second-order optimization algorithms**.
@@ -44,5 +44,7 @@ Deep Learning Book [Ch. 4](https://www.deeplearningbook.org/contents/numerical.h
   - When we have positive curvature, numerator tells us that bigger gradients mean we can take bigger steps - speeds up algorithm.
   - When we have positive curvature, denominator tells us that big eigenvalues reduce step size if gradient aligns with the Hessian's eigenvectors - slows down algorithm. Otherwise you may jump past the minimum and to an uphill point.
 - The condition number is the maximum ratio between any two eigenvalues of the Hessian, A large condition number requires that you keep the learning rate small.
+- Be careful with logs, exponents, square roots, and division.
+  - Log(sum(exp($x$))) is subject to under/overflow. To safely compute, can find the max value in array and subtract it from the array, then calculate max + log(sum(exp($x$ - max))).
+- Softmax, sigmoid, and cross-entropy functions are very common and generally implemented safely in libraries.
 
-Resume at 24:07
