@@ -24,6 +24,17 @@ Deep Learning Book [Ch. 6](https://www.deeplearningbook.org/contents/mlp.html)
     - Absolute value rectification sets $\alpha_i = -1$ and is often used for image object recognition.
     - A leaky ReLU fixes $\alpha_i$ to a small value like 0.01.
     - A parametric ReLU (or PReLU) treats $\alpha_i$ as a learnable parameter.
+    - Maxout units divide $\boldsymbol{z}$ into groups of $k$ values, then take the max of each group. Maxout units can learn to approximate any convex activation function.
+    - Logistic sigmoid $g(z) = \sigma(z)$ and hyperbolic tangent $g(z) = \text{tanh}(z) = 2\sigma(2z)-1$. Discouraged in hidden layers because they saturate.
+    - Linear hidden units can help reduce the number of parameters in a network.
+- Designing neural nets involves choosing the number of layers (depth) and number of units per layer (width).
+  - Deeper networks are usually able to use fewer units per layer and fewer parameters, but are harder to optimize. Shallow networks often require a number of hidden units that is exponential in $n$.
+  - A deep architecture can be thought of as a general belief that the function we are trying to learn is made up of several simpler functions. Alternately, it can be a belief that the target function is a computer program that successively applies functions.
+  - Choosing an architecture involves experimentation guided by validation error.
+- In training a feedforward neural net, forward propagation involves the input flowing through the network to generate $\boldsymbol{\hat y}$ and calculate a scalar cost. Then, the **back-propagation** algorithm is used to compute the gradient from the cost.
+  - Generally use dynamic programming and  initialize an array/table to store calculations to allow for re-use. This will speed computation time at the expense of memory.
+- The **chain rule** tells us that we can calculate the gradient of a variable $\boldsymbol{x}$ when $\boldsymbol{y} = g(\boldsymbol{x})$ and $z = f(\boldsymbol{y})$ by $\Delta_{ \boldsymbol{x}}z = (\frac{\partial \boldsymbol{y}}{\partial \boldsymbol{x}})^T \Delta_{ \boldsymbol{y}}z$.
+  - The Jacobian matrix $\frac{\partial \boldsymbol{y}}{\partial \boldsymbol{x}}$ and the gradient $\Delta_{\boldsymbol{y}}z$ are used.
 
 ### Video - Historical Perspective of Deep Learning
 
@@ -36,8 +47,10 @@ Deep Learning Book [Ch. 6](https://www.deeplearningbook.org/contents/mlp.html)
 
 ### Video - Components of Neural Networks
 
+- An artificial **neuron** has one or more binary inputs and one binary output. Neurons can be combined into a network to perform logical computations (e.g. and/or).
 - A LTU (linear threshold unit) consists of a weighted sum ($\boldsymbol{z} = \boldsymbol{w^T x} + b)$ and an activation threshold/step function ($\boldsymbol{a} = \phi(\boldsymbol{x})$).
   - $\boldsymbol{x}$ are the inputs and $\boldsymbol{w}$ are the weights, while $\boldsymbol{a} = \hat{y}$ are the outputs.
+  - Similar to a neuron, but has numeric inputs/outputs.
 - A **perceptron** is a simple neural net architecture consisting of a layer with LTU, and each neuron connected to all the input neurons (also usually including a bias neuron).
 - A **multi-layer perceptron (MLP)** consists of one input layer, one or more hidden layers of LTUs, and one final output layer of LTU.
   - An MLP with 2+ hidden layers is a Deep Neural Network (DNN).
@@ -55,7 +68,6 @@ Deep Learning Book [Ch. 6](https://www.deeplearningbook.org/contents/mlp.html)
 - The **softmax** function exponentiates and normalizes inputs to generate outputs summing to 1 (very useful for converting to probability of being assigned to a certain class).
   - $\text{softmax}(\boldsymbol{z})_i = \frac{\text{exp}(z_i)}{\sum_j \text{exp}z_j}$, where $z_i = \text{log}P(y = i | x)$
   - A "softened" version of argmax, which returns a one-hot encoded vector. Can be thought of as a generalization of the sigmoid function for binary variables to multivariate ones.
-
 - Main considerations for neural network design are the depth of the network (number of layers) and width of each layer (number of nodes).
   - Deeper networks usually have fewer units per layer and are harder to optimize.
   - Ideal network architecture selected using experimentation guided by validation error.
@@ -92,3 +104,12 @@ Deep Learning Book [Ch. 6](https://www.deeplearningbook.org/contents/mlp.html)
 *February 8, 2021*
 
 - Overfitting occurs when E[test error] - E[training error] is large.
+
+*February 15, 2021*
+
+- FF networks and MLPs are general tools for arbitrary function estimation.
+  - Computationally tractable with stochastic gradient descent but not gradient descent (due to large modern data sets).
+- Universal approximation theorem: a FF network with at least one hidden layer with any "squashing" activation function can approximate any function to arbitrary accuracy.
+- Kernel methods providing transformations into alternative feature spaces seem very flexible, but their predefined nature often does not provide the best generalization.
+- Deep learning essentially tries to pass feature engineering from the human to the machine. Neural nets can consider far more feature transformations.
+- Deeper networks encode a prior belief that composition of increasingly complex features captures relevant variation.
