@@ -157,3 +157,81 @@ Reading: Deep Learning Book Ch. 8
     - Fails when blurring doesn't make function convex.
   - Can also help eliminate flat regions, decrease variance in gradient estimates, or improve conditioning of the Hessian.
   - Curriculum learning is a continuation method that plans a learning process to learn simple concepts and progress to more complex concepts that depend on the simpler ones.
+
+### Video - Initialization, Activation, & Normalization
+
+- Empirical risk minimization tries to minimize the expected loss on the training set. Optimize empirical risk in hope that overall risk decreases as well.
+- Choice of minibatch size depends on hardware, parallelism, and memory. 
+  - Common to choose power of 2 batch sizes (32-256).
+  - Minibatches must be selected randomly.
+- Local minima with high cost can be a serious problem for gradient-based optimization. 
+- Saddle points are common in high-dimensional non-convex functions. Some points around a saddle have higher cost and some have lower.
+- Complex problems require deep networks, but training will be slow, overfitting can occur due to millions of params, and "vanishing gradients" can be an issue.
+  - Vanishing gradients occur in deep computational graphs when the same operation is applied repeatedly, causing the gradient to get smaller and smaller.
+  - Exploding gradient problem is reverse, when gradient gets larger and larger, causing the network to become unstable.
+- **Initialization**: how to initialize weights so they do not saturate? Deep learning is strongly affected by initialization.
+  - To avoid vanishing, exploding, and saturating, we want to break symmetry between different units. Xavier initialization does this by using $\boldsymbol{W}_{i, j}$ ~ $\text{Uniform}(-\sqrt\frac{6}{n_{inputs} + n_{outputs}}, \sqrt\frac{6}{n_{inputs} + n_{outputs}})$ or $\boldsymbol{W}_{i, j}$ ~ $N(0, \sqrt\frac{2}{n_{inputs} + n_{outputs}})$
+    - Uses heuristic that variance of outputs of each layer should be same as variance of its inputs.
+  - He initialization multiplies the Xavier initialization parameters by 4 for hyperbolic tangent activation function and by $\sqrt{2}$ for ReLU.
+  - Controlled by `kernel_initializer` param in `keras.layers.Dense`.
+- **Activation**: how to solve vanishing gradient problem?
+  - Sigmoid function saturates, so other functions like ReLU often perform much better.
+  - ReLU fast to compute, but can "die" when it outputs 0. Leaky ReLU addresses this by having slight negative slope when less 0.
+  - ELU (exponential linear unit) converges faster than ReLU. Avoids dead neurons.
+    - Similar to leaky ReLU, but smooth exponential curve when less than 0 ($\alpha(\text{exp}(z) - 1)$ for $z < 0$). Means it is differentiable at 0.
+    - Specified by `activation = 'selu'` in keras.
+- **Normalization**: how to get model to learn optimal scale?
+  - Batch normalization adds an operation (normalizing) before the activation function. Puts inputs on optimal scale.
+    - Tries to learn scale, offset, mean, and standard deviation for each node.
+    - In keras, can put `keras.layers.BatchNormalization()` before each Dense layer.
+  - Gradient clipping is a "quick and dirty" alternative to batch normalization. Clips gradients during backpropagation so that they can never exceed some threshold.
+    - Often used in Recurrent Neural Nets.
+
+### Video - Optimizers, Adaptive Learning Rates, & Second-Order Methods
+
+- **Optimizers**: what to do when gradient descent is too slow or not good enough?
+  - Momentum optimization accumulates past gradients and continues to move in their direction to accelerate the learning.
+    - Nesterov momentum evaluates the gradient *after* the current momentum is applied (instead of before in regular momentum). Update parameters, *then* evaluate gradient.
+- **Adaptive Learning Rate**: what if convergence is too slow or sub-optimal?
+  - Adaptive learning rates introduce a hyperparameter $\alpha$ to offset the problem of  a loss function being highly sensitive in some directions of parameter space and insensitive to others. Also addresses the issue of learning rate $\epsilon$ being one of the most difficult hyperparameters to set.
+    - AdaGrad individually adapts the learning rates of all model parameters. Scales them inversely proportional to sum of all previous squared gradient values. Won't go too fast in steep areas or too slow in shallow areas.
+    - RMSProp is like AdaGrad, but discards history from extreme past to avoid scaling down the learning rate too fast. Exponential decay $\beta$ (`rho` in keras) typically set to 0.9.
+    - Adam (Adaptive Moment Estimation): like momentum, keeps track of exponentially decaying moving average of past gradients, and like RMSProp, keeps track of exponentially decaying moving average of past squared gradients.
+  - No consensus on which algorithm is best, depends largely on user's familiarity with algorithm and ability to tune.
+- **Second-Order Training Methods**: can we make use of second derivatives?
+  - SGD, momentum, and Adam are all first-order optimization methods (use only the gradient).
+  - Hessian = Jacobian of gradient function (contains second derivatives).
+  - Newton's method (most widely-used second-order method) is based on a Taylor series expansion.
+    - $J(\theta) \approx J(\theta_0) + (\theta - \theta_0)^T \boldsymbol{g} + \frac{1}{2}(\theta - \theta_0)^T \boldsymbol{H}(\theta - \theta_0)$: first term is previous value of loss function, second is expected improvement due to the slope, third is correction applied to account for curvature.
+    - Solve for critical point of $J(\theta)$ (using inverse Hessian) to jump directly to a critical point. Works for convex quadratic functions immediately, convex functions iteratively, but not as well for non-convex functions (with saddle points).
+    - Inverting Hessian is computationally expensive, so only practical for small networks.
+  - Conjugate gradients method avoids calculation of inverse Hessian and instead iteratively descends conjugate directions.
+    - In $k$-dimensional parameter space, reaches minimum in at most $k$ line searches.
+  - BFGS algorithm is a quasi-Newton method that approximates the inverse of the Hessian using iterative refinement by low-rank updates.
+    - Requires storing approx. inverse Hessian matrix $\boldsymbol{M}$, which requires $O(n^2$) memory, so not practical for large networks with millions of params.
+
+### Class Notes
+
+*March 3, 2021*
+
+- Numerically unstable: can come from high condition number of matrix (small change to number multiplied by matrix leads to large change in result). Unstable gradient: vanishing or exploding.
+- Using minibatch can provide some regularization by having a (possibly) different gradient each time.
+  - Small batches can oﬀer a regularizing eﬀect because they add noise to the random samples. This is similar intuition as with dropout regularization.
+- SGD means that larger data doesn't slow optimization.
+- Appropriately scaling weight initializations biases against vanishing or exploding activations. Randomly initializing weights helps create a variety of different activation functions.
+- If distribution of activations at each layer is changing rapidly, increasing/decreasing the scale of weight parameter initialization could help. 
+  - Similarly, if distribution of gradients at each backprop layer is very small, increasing scale of weight parameter could help.
+- Batch normalization causes weight changes in previous layers to not change the scale of batch normalization layer activations, which in turn causes the weights coming into the batch normalization layer to not be so affected by changes in weights of previous layers.
+- Nesterov momentum is basically a one-step ahead prediction of where it will momentarily be.
+- AdaGrad accumulates gradient from all time, which becomes less useful as training goes on. Learning rate is an inverse, so learning rate gets very very small, and it stops moving. AdaDelta and RMSProp have a short-term memory (exponentially decaying average).
+  - AdaGrad has no notion of momentum - interested in shape of function it is traversing, while momentum is interested in current speed.
+  - AdaGrad increases (not decreases) the learning rate of parameters that yield small partial derivative w.r.t loss.
+- In Adam, momentum corresponds to the first derivative and adaptive learning rate is the second derivative.
+
+![](opt-skier-analogies.png)
+
+- Momentum = in-motion skier because. *they're already in motion sliding along and building up that speed so that's going to affect how they actually change directions based on the current gradient calculated at a given instant/SGD step*.
+  - Nesterov momentum is **based on where they predict they will momentarily be** *not where they currently are* (like regular momentum).
+  - AdaGrad and RMSProp = stationary hikers because *they're not building up speed (like a "skier") but just following the gradient at each step.*
+  - AdaGrad goes faster on the shallower slopes, and SLOWER on the steep slopes by speeding up the learning rates on the axes with more shallow slopes.
+  - RMSProp/AdaDelta differ from AdaGrad in that they take into account recent steepness rather than all gradient history. Both keep the idea of going faster on shallower slopes and slower on steep slopes.
