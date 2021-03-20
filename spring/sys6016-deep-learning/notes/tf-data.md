@@ -97,3 +97,10 @@ Reading: *Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow* [C
   - Buffer size is a window within which each element is sampled. So buffer size of two randomly chooses first element from first two in dataset, then chooses next from third element along with the unselected element from first two, and so on.
   - There is a command line utility `gshuf` for shuffling data files in bash, before even getting to tf.
 - If you have enough RAM, might not want to re-preprocess at each epoch - can use `.cache()` method in tf.
+
+*March 15, 2021*
+
+- `tensorflow.train.Example` is a json-like object which can then be written to TFRecord with `.SerializeToString()`.
+- Zero-padding is a common way to make tensors be the same length (e.g. with sentences of different length).
+  - Bag of words and other more traditional methods don't have these issues.
+  - Using tokenized words can help keep vocabulary from being too large.
